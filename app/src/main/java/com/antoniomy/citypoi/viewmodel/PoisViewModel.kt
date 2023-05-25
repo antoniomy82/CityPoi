@@ -175,14 +175,14 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     private fun goToHome() =  replaceFragment(HomeDistrictFragment(), (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager)
     fun goToMap() = replaceFragment(MapFragment(this, selectedCity), (frgMainContext as AppCompatActivity).supportFragmentManager)
 
-    fun goToList() = replaceFragment(position?.let { PoisDistrictListFragment(getRemoteDistrictRepository, retrieveDistrict, selectedCity, it) }, (frgMainContext as AppCompatActivity).supportFragmentManager)
+    fun goToList() = replaceFragment(position?.let { PoisDistrictListFragment(retrieveDistrict, selectedCity, it) }, (frgMainContext as AppCompatActivity).supportFragmentManager)
 
     private fun goToDetail(mPoi: Pois?) = replaceFragment(mPoi?.let { it1 -> DetailFragment(it1, this) }, (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager)
 
     fun closePopUp() {
         when (popUpLocation) {
             //TODO : Cities Navigator
-            0 -> replaceFragment(position?.let { PoisDistrictListFragment(getRemoteDistrictRepository, retrieveDistrict, selectedCity, it) }, (frgMainContext as AppCompatActivity).supportFragmentManager)
+            0 -> replaceFragment(position?.let { PoisDistrictListFragment(retrieveDistrict, selectedCity, it) }, (frgMainContext as AppCompatActivity).supportFragmentManager)
 
             1 -> replaceFragment(MapFragment(this, selectedCity), (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager)
         }

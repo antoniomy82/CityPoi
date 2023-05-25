@@ -20,9 +20,9 @@ import com.antoniomy.citypoi.homedistrict.HomeDistrictFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import javax.inject.Inject
 
-class PoisDistrictListFragment
-@Inject
-constructor (private val getRemoteDistrictRepository: GetRemoteDistrictRepository, private val mDistrict: District? = null, private var cityName: String? = null, private val urlID: Int) : Fragment() {
+class PoisDistrictListFragment (private val mDistrict: District? = null, private var cityName: String? = null, private val urlID: Int) : Fragment() {
+
+    @Inject lateinit var getRemoteDistrictRepository: GetRemoteDistrictRepository
 
     private lateinit var fragmentDistrictListBinding: FragmentDistrictListBinding
     private var poisViewModel: PoisViewModel? = null

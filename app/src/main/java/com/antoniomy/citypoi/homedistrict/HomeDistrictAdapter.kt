@@ -11,14 +11,11 @@ import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.databinding.AdapterHomeDistrictsBinding
 import com.antoniomy.citypoi.districtlist.PoisDistrictListFragment
 import com.antoniomy.citypoi.replaceFragment
-import com.antoniomy.domain.GetRemoteDistrictRepository
 import com.antoniomy.domain.model.CitiesListHome
-import javax.inject.Inject
 
 class HomeDistrictAdapter( private val districtList: List<CitiesListHome>, private val context: Context) :
     RecyclerView.Adapter<HomeDistrictAdapter.ViewHolder>() {
 
-    @Inject lateinit var getRemoteDistrictRepository: GetRemoteDistrictRepository
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
         DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
@@ -34,7 +31,7 @@ class HomeDistrictAdapter( private val districtList: List<CitiesListHome>, priva
 
             root.setOnClickListener {
                 replaceFragment(districtList[position].urlId?.let { it1 ->
-                    PoisDistrictListFragment(getRemoteDistrictRepository,null, districtList[position].cityName, it1)
+                    PoisDistrictListFragment(null, districtList[position].cityName, it1)
                 }, (context as AppCompatActivity).supportFragmentManager)
             }
         }

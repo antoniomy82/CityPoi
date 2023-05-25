@@ -1,8 +1,6 @@
 package com.antoniomy.domain
 
 import com.antoniomy.data.DistrictRemoteDataSource
-import com.antoniomy.data.model.MultimediaRemote
-import com.antoniomy.domain.model.CategoryRemote
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.DistrictRemote
 import com.antoniomy.domain.model.Multimedia
@@ -12,15 +10,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.MutableStateFlow
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class GetRemoteDistrictRepositoryImpl
-@Inject constructor(private val remoteDataSource: DistrictRemoteDataSource) : GetRemoteDistrictRepository {
-
-    override fun getRemoteDistrict(urlID: String): MutableStateFlow<District> = districtRemoteToDistrictMapper(remoteDataSource.getDistrictList(urlID).value)
+class GetRemoteDistrictRepositoryImpl : GetRemoteDistrictRepository {
+    @Provides
+    @Singleton
+    override fun getRemoteDistrict(urlID: String): MutableStateFlow<District> = districtRemoteToDistrictMapper(DistrictRemoteDataSource().getDistrictList(urlID).value)
 
 
     private fun districtRemoteToDistrictMapper(districtRemote: DistrictRemote):MutableStateFlow<District>{
