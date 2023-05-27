@@ -1,14 +1,13 @@
 package com.antoniomy.citypoi.districtlist
 
-//import com.antoniomy.data.DistrictsRepository
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
@@ -18,17 +17,14 @@ import com.antoniomy.citypoi.homedistrict.HomeDistrictFragment
 import com.antoniomy.citypoi.replaceFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.District
-import kotlinx.coroutines.flow.MutableStateFlow
-
-//import com.antoniomy.data.model.District
 
 class PoisDistrictListFragment(
     private val mDistrict: District? = null,
     private var cityName: String? = null,
-    private val urlID: Int
+    private val urlID: Int,
+    private val poisViewModel: PoisViewModel
 ) : Fragment() {
 
-    private val poisViewModel: PoisViewModel by viewModels()
     private lateinit var fragmentDistrictListBinding: FragmentDistrictListBinding
 
 
@@ -37,21 +33,44 @@ class PoisDistrictListFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        fragmentDistrictListBinding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_district_list, container, false)
+        fragmentDistrictListBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_district_list, container, false)
         return fragmentDistrictListBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initObservers()
+        setUI()
+        context?.let { poisViewModel.frgMainContext = it }
+        poisViewModel.getDistrict("$urlID")
+
+    }
+
+
+    private fun setUI() {
+        //Top bar title
+        val headerTitle = view?.findViewById<View>(R.id.headerTitle) as TextView
+        headerTitle.text = cityName
+        poisViewModel.selectedCity = cityName.toString()
+
+        //Back arrow
+        view?.findViewById<View>(R.id.headerBack)?.setOnClickListener {
+            replaceFragment(HomeDistrictFragment(poisViewModel), parentFragmentManager)
+        }
+
+    }
+
+    private fun initObservers(){
         when (mDistrict) {
             null -> {
-                poisViewModel.isRetrieveData.collectInLifeCycle(viewLifecycleOwner) { isRetrieveData ->
-                    if (isRetrieveData.name != null) {
-                        setTittleFromAdapter(isEmpty = true)
-                        setObserverIntoViewModel(isRetrieveData)
-                    }
+                poisViewModel.fetchDistricts.collectInLifeCycle(viewLifecycleOwner){
+                    setTittleFromAdapter(isEmpty = true)
+                    setObserverIntoViewModel(it)
+                }
+
+                poisViewModel.errorResponse.collectInLifeCycle(viewLifecycleOwner) { errorMessage ->
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -67,27 +86,8 @@ class PoisDistrictListFragment(
         }
 
 
-        setUI()
-        context?.let { poisViewModel.frgMainContext = it }
 
     }
-
-
-    private fun setUI() {
-        poisViewModel.loadDistrict("$urlID")
-
-        //Top bar title
-        val headerTitle = view?.findViewById<View>(R.id.headerTitle) as TextView
-        headerTitle.text = cityName
-        poisViewModel.selectedCity = cityName.toString()
-
-        //Back arrow
-        view?.findViewById<View>(R.id.headerBack)?.setOnClickListener {
-            replaceFragment(HomeDistrictFragment(), parentFragmentManager)
-        }
-
-    }
-
     private fun setObserverIntoViewModel(retrieveDistrict: District) {
 
         retrieveDistrict.let {

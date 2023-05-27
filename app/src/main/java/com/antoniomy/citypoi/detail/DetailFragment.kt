@@ -6,11 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.databinding.PopUpPoisDetailBinding
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
-//import com.antoniomy.data.model.PoisRemote
 import com.antoniomy.domain.model.Pois
 
 
@@ -26,7 +24,6 @@ class DetailFragment(private val mPoi: Pois, private val mVm: PoisViewModel) : F
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        poisViewModel = ViewModelProvider(this)[PoisViewModel::class.java]
 
         poisViewModel= mVm
         poisViewModel?.popUpBinding=popUpPoisDetailBinding

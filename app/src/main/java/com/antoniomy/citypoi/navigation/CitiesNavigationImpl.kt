@@ -13,8 +13,8 @@ import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Pois
 
 class CitiesNavigationImpl : CitiesNavigation {
-    override fun goToHome(fragmentManager: FragmentManager) {
-        replaceFragment(HomeDistrictFragment(), fragmentManager)
+    override fun goToHome( poisViewModel:PoisViewModel ,fragmentManager: FragmentManager) {
+        replaceFragment(HomeDistrictFragment(poisViewModel), fragmentManager)
     }
 
     override fun goToMap(
@@ -29,9 +29,15 @@ class CitiesNavigationImpl : CitiesNavigation {
         retrieveDistrict: District?,
         selectedCity: String,
         position: Int,
-        fragmentManager: FragmentManager
+        fragmentManager: FragmentManager,
+        poisViewModel:PoisViewModel
     ) {
-        replaceFragment(PoisDistrictListFragment(retrieveDistrict, selectedCity, position), fragmentManager)
+        replaceFragment(PoisDistrictListFragment(
+            retrieveDistrict,
+            selectedCity,
+            position,
+            poisViewModel
+        ), fragmentManager)
 
     }
 

@@ -21,13 +21,12 @@ import com.antoniomy.citypoi.districtlist.PoisDistrictListFragment
 import com.antoniomy.citypoi.getTimeResult
 import com.antoniomy.citypoi.loadIcon
 import com.antoniomy.citypoi.mediaProgress
+import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
 import com.antoniomy.citypoi.replaceFragment
-//import com.antoniomy.data.model.District
+import com.antoniomy.data.api.ApiResource
+import com.antoniomy.data.repository.DistrictRemoteRepo
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Pois
-//import com.antoniomy.data.model.PoisRemote
-import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
-import com.antoniomy.domain.GetRemoteDistrictRepositoryImpl
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -38,21 +37,28 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
-class PoisViewModel : ViewModel(), OnMapReadyCallback {
+@HiltViewModel
+class PoisViewModel @Inject constructor(private val districtRemoteRepo: DistrictRemoteRepo): ViewModel(), OnMapReadyCallback {
 
     //Main Fragment values
     var frgMainContext: Context? = null
 
+    private var _fetchDistricts = MutableStateFlow(District())
+    val fetchDistricts: StateFlow<District> get() = _fetchDistricts
+
+    private val _errorResponse =  MutableStateFlow("Loading..")
+    val errorResponse: StateFlow<String> get() = _errorResponse
+
     private var citiesNavigation = CitiesNavigationImpl()
 
-    private val _isRetrieveData = MutableStateFlow(District())
-    var isRetrieveData : StateFlow<District> = _isRetrieveData
 
     private var mainBundle: Bundle? = null
     private var position: Int? = 0
@@ -87,15 +93,18 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     private var launchTimer: CountDownTimer? = null
     var popUpLocation: Int = 0
 
-    private val getRemoteDistrictRepository = GetRemoteDistrictRepositoryImpl() //TODO Pasar a hilt
-    fun loadDistrict(urlId: String) {
+    fun getDistrict(urlId : String) {
         viewModelScope.launch {
-            // Trigger the flow and consume its elements using collect
-            getRemoteDistrictRepository.getRemoteDistrict(urlId).collect {
-                isRetrieveData=getRemoteDistrictRepository.districtRemoteToDistrictMapper()
+            val districtsResponse = districtRemoteRepo.getDistrict(urlId)
+            Log.d("----->",districtsResponse.toString())
+            when (districtsResponse) {
+                is ApiResource.Success -> districtsResponse.value.let {  _fetchDistricts.value = it}
+                is ApiResource.Error ->  _errorResponse.value=districtsResponse.errorBody.toString()
+                else -> Log.e("ERROR RESPONSE-->", "UNKNOW ERROR")
             }
         }
     }
+
 
     fun setMapsUI() {
         //Top bar title
@@ -104,7 +113,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
         //Back arrow
         frgMapsView?.get()?.findViewById<View>(R.id.headerBack)?.setOnClickListener {
-            citiesNavigation.goToHome((frgMapsContext?.get() as AppCompatActivity).supportFragmentManager)
+            citiesNavigation.goToHome(this, (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager)
         }
 
         if (retrieveDistrict != null) {
@@ -189,7 +198,8 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         PoisDistrictListFragment(
             retrieveDistrict,
             selectedCity,
-            it
+            it,
+            this
         )
     }, (frgMainContext as AppCompatActivity).supportFragmentManager)
 

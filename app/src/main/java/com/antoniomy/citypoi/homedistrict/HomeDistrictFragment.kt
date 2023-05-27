@@ -7,18 +7,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.databinding.FragmentHomeDistrictBinding
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import kotlin.system.exitProcess
+class HomeDistrictFragment(private val poisViewModel: PoisViewModel) : Fragment() {
 
-class HomeDistrictFragment : Fragment() {
-
-    private val poisViewModel: PoisViewModel by viewModels()
     private var fragmentHomeDistrictBinding: FragmentHomeDistrictBinding? = null
 
     private val madName = "Madrid"
@@ -76,6 +72,6 @@ class HomeDistrictFragment : Fragment() {
     private fun setHomeRecyclerViewAdapter() {
         val recyclerView: RecyclerView = view?.findViewById(R.id.rvHome) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = context?.let { HomeDistrictAdapter( homeCities, it) }
+        recyclerView.adapter = context?.let { HomeDistrictAdapter( homeCities, it,  poisViewModel) }
     }
 }
