@@ -7,40 +7,40 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.databinding.FragmentHomeDistrictBinding
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
-import com.antoniomy.domain.model.CitiesListHome
 import kotlin.system.exitProcess
 
 class HomeDistrictFragment : Fragment() {
 
-    private var poisViewModel: PoisViewModel? = null
+    private val poisViewModel: PoisViewModel by viewModels()
     private var fragmentHomeDistrictBinding: FragmentHomeDistrictBinding? = null
 
     private val madName = "Madrid"
     private val sevName = "Sevilla"
     private val bcnName = "Barcelona"
 
-    private val homeCities: List<CitiesListHome> = listOf(
-        CitiesListHome(madName, "Lavapíes", R.mipmap.ic_madrid_round, 1),
-        CitiesListHome(madName, "Centro", R.mipmap.ic_madrid_round, 2),
-        CitiesListHome(madName, "Malasaña", R.mipmap.ic_madrid_round, 3),
-        CitiesListHome(madName, "Chueca", R.mipmap.ic_madrid_round, 5),
-        CitiesListHome(madName, "Huertas", R.mipmap.ic_madrid_round, 6),
-        CitiesListHome(sevName, "Alfalfa, Casco Antiguo", R.mipmap.ic_sevilla_round, 7),
-        CitiesListHome(sevName, "Arenal, Museo", R.mipmap.ic_sevilla_round, 8),
-        CitiesListHome(sevName, "Macarena, S.Luis, S.Vicente", R.mipmap.ic_sevilla_round, 9),
-        CitiesListHome(sevName, "Santa Cruz, Juderia", R.mipmap.ic_sevilla_round, 10),
-        CitiesListHome(sevName, "Triana, Los Remedios", R.mipmap.ic_sevilla_round, 11),
-        CitiesListHome(bcnName, "Barceloneta, Poble Nou", R.mipmap.ic_barcelona_round, 12),
-        CitiesListHome(bcnName, "El born, Ribera", R.mipmap.ic_barcelona_round, 13),
-        CitiesListHome(bcnName, "Gótico", R.mipmap.ic_barcelona_round, 14),
-        CitiesListHome(bcnName, "Raval Poble Sec", R.mipmap.ic_barcelona_round, 15),
-        CitiesListHome(bcnName, "Eixample, Gracia", R.mipmap.ic_barcelona_round, 16)
+    private val homeCities: List<CitiesListModel> = listOf(
+        CitiesListModel(madName, "Lavapíes", R.mipmap.ic_madrid_round, 1),
+        CitiesListModel(madName, "Centro", R.mipmap.ic_madrid_round, 2),
+        CitiesListModel(madName, "Malasaña", R.mipmap.ic_madrid_round, 3),
+        CitiesListModel(madName, "Chueca", R.mipmap.ic_madrid_round, 5),
+        CitiesListModel(madName, "Huertas", R.mipmap.ic_madrid_round, 6),
+        CitiesListModel(sevName, "Alfalfa, Casco Antiguo", R.mipmap.ic_sevilla_round, 7),
+        CitiesListModel(sevName, "Arenal, Museo", R.mipmap.ic_sevilla_round, 8),
+        CitiesListModel(sevName, "Macarena, S.Luis, S.Vicente", R.mipmap.ic_sevilla_round, 9),
+        CitiesListModel(sevName, "Santa Cruz, Juderia", R.mipmap.ic_sevilla_round, 10),
+        CitiesListModel(sevName, "Triana, Los Remedios", R.mipmap.ic_sevilla_round, 11),
+        CitiesListModel(bcnName, "Barceloneta, Poble Nou", R.mipmap.ic_barcelona_round, 12),
+        CitiesListModel(bcnName, "El born, Ribera", R.mipmap.ic_barcelona_round, 13),
+        CitiesListModel(bcnName, "Gótico", R.mipmap.ic_barcelona_round, 14),
+        CitiesListModel(bcnName, "Raval Poble Sec", R.mipmap.ic_barcelona_round, 15),
+        CitiesListModel(bcnName, "Eixample, Gracia", R.mipmap.ic_barcelona_round, 16)
     )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -52,7 +52,6 @@ class HomeDistrictFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        poisViewModel = ViewModelProvider(this)[PoisViewModel::class.java]
         fragmentHomeDistrictBinding?.poisVM = poisViewModel
 
         setUI()
@@ -71,7 +70,7 @@ class HomeDistrictFragment : Fragment() {
                 exitProcess(0)
             }
         }
-        poisViewModel?.poisCount?.value = homeCities.size.toString()  //Set counter
+        poisViewModel.poisCount.value = homeCities.size.toString()  //Set counter
     }
 
     private fun setHomeRecyclerViewAdapter() {

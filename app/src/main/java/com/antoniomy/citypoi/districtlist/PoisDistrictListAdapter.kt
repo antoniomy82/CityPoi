@@ -9,8 +9,9 @@ import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.databinding.AdapterPoisDistrictListBinding
 import com.antoniomy.citypoi.detail.DetailFragment
 import com.antoniomy.citypoi.replaceFragment
-import com.antoniomy.domain.model.District
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
+//import com.antoniomy.data.model.District
+import com.antoniomy.domain.model.District
 import com.bumptech.glide.Glide
 
 class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDistrict: District, private val fm: FragmentManager) :

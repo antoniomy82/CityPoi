@@ -1,7 +1,5 @@
 package com.antoniomy.domain.model
 
-import com.antoniomy.data.model.MultimediaRemote
-
 data class Category(
     var id: Int? = null,
     var icon: Multimedia? = null,

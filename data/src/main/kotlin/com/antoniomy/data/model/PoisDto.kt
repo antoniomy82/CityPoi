@@ -1,22 +1,20 @@
 package com.antoniomy.data.model
 
-import com.antoniomy.domain.model.CategoryRemote
-
-data class PoisRemote(
+data class PoisDto(
     var likesCount: Int? = null,
     var eventsCount: Int? = null,
     var newsCount: Int? = null,
     var id: Int? = null,
-    var image: MultimediaRemote? = null,
-    var galleryImages: List<MultimediaRemote>? = null,
+    var image: MultimediaDto? = null,
+    var galleryImages: ArrayList<MultimediaDto>? = null,
     var latitude: Float? = null,
     var longitude: Float? = null,
-    var category: CategoryRemote? = null,
+    var categoryDto: CategoryDto? = null,
     var premium: Boolean? = null,
     var name: String? = null,
     var description: String? = null,
-    var video: MultimediaRemote? = null,
-    var audio: MultimediaRemote? = null,
+    var video: MultimediaDto? = null,
+    var audio: MultimediaDto? = null,
     var likeIt: Boolean? = null
 )
 

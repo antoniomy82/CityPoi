@@ -1,9 +1,7 @@
 package com.antoniomy.citypoi.viewmodel
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Bitmap
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -14,39 +12,47 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.databinding.FragmentMapBinding
 import com.antoniomy.citypoi.databinding.PopUpPoisDetailBinding
 import com.antoniomy.citypoi.detail.DetailFragment
 import com.antoniomy.citypoi.districtlist.PoisDistrictListFragment
 import com.antoniomy.citypoi.getTimeResult
-import com.antoniomy.citypoi.homedistrict.HomeDistrictFragment
-import com.antoniomy.citypoi.map.MapFragment
+import com.antoniomy.citypoi.loadIcon
 import com.antoniomy.citypoi.mediaProgress
+import com.antoniomy.citypoi.replaceFragment
+//import com.antoniomy.data.model.District
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Pois
-import com.antoniomy.citypoi.replaceFragment
-import com.antoniomy.domain.GetRemoteDistrictRepository
+//import com.antoniomy.data.model.PoisRemote
+import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
+import com.antoniomy.domain.GetRemoteDistrictRepositoryImpl
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
-import javax.inject.Inject
 import kotlin.properties.Delegates
-
 
 class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
-    @Inject lateinit var getRemoteDistrictRepository: GetRemoteDistrictRepository
     //Main Fragment values
-    lateinit var frgMainContext: Context
+    var frgMainContext: Context? = null
+
+    private var citiesNavigation = CitiesNavigationImpl()
+
+    private val _isRetrieveData = MutableStateFlow(District())
+    var isRetrieveData : StateFlow<District> = _isRetrieveData
 
     private var mainBundle: Bundle? = null
     private var position: Int? = 0
@@ -56,7 +62,6 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     val poisCount = MutableLiveData<String>().also { it.value = "0" }
 
     //Maps Fragment values
-    private var frgMapsActivity: WeakReference<Activity>? = null
     private var frgMapsContext: WeakReference<Context>? = null
     private var frgMapsView: WeakReference<View>? = null
     private var fragmentMapBinding: FragmentMapBinding? = null
@@ -76,12 +81,21 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     //Media player
     val remainingTime = MutableLiveData<String>()
     var popUpBinding: PopUpPoisDetailBinding? = null
-    var totalDuration by Delegates.notNull<Long>()
+    private var totalDuration by Delegates.notNull<Long>()
     private var mediaPlayer: MediaPlayer? = null
     private var myUri: Uri? = null
     private var launchTimer: CountDownTimer? = null
     var popUpLocation: Int = 0
 
+    private val getRemoteDistrictRepository = GetRemoteDistrictRepositoryImpl() //TODO Pasar a hilt
+    fun loadDistrict(urlId: String) {
+        viewModelScope.launch {
+            // Trigger the flow and consume its elements using collect
+            getRemoteDistrictRepository.getRemoteDistrict(urlId).collect {
+                isRetrieveData=getRemoteDistrictRepository.districtRemoteToDistrictMapper()
+            }
+        }
+    }
 
     fun setMapsUI() {
         //Top bar title
@@ -90,16 +104,13 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
         //Back arrow
         frgMapsView?.get()?.findViewById<View>(R.id.headerBack)?.setOnClickListener {
-            //TODO : Cities Navigator
-           goToHome()
+            citiesNavigation.goToHome((frgMapsContext?.get() as AppCompatActivity).supportFragmentManager)
         }
 
         if (retrieveDistrict != null) {
             districtTittle.value = retrieveDistrict?.name?.uppercase()
-
             if (retrieveDistrict?.pois?.size == 0) poisCount.value = "0"
             else poisCount.value = retrieveDistrict?.pois?.size.toString()
-
         }
 
         fragmentMapBinding?.poisVM = this //Update the view with dataBinding
@@ -109,13 +120,11 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
     //Set Maps fragment parameters in this VM
     fun setMapsFragmentBinding(
-        frgActivity: Activity,
         frgContext: Context,
         frgView: View,
         fragmentMapBinding: FragmentMapBinding,
         mapsBundle: Bundle?
     ) {
-        this.frgMapsActivity = WeakReference(frgActivity)
         this.frgMapsContext = WeakReference(frgContext)
         this.frgMapsView = WeakReference(frgView)
         this.fragmentMapBinding = fragmentMapBinding
@@ -141,7 +150,9 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         if (mPoi?.image?.url != null) {
             frgMainContext.let {
                 popUpBinding.photoPopup.let { it1 ->
-                    Glide.with(it).load(mPoi.image?.url).into(it1)
+                    if (it != null) {
+                        Glide.with(it).load(mPoi.image?.url).into(it1)
+                    }
                 }
             }
         }
@@ -149,7 +160,9 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         //Set icon image
         frgMainContext.let {
             popUpBinding.iconPopup.let { it1 ->
-                Glide.with(it).load(mPoi?.category?.icon?.url.toString()).into(it1)
+                if (it != null) {
+                    Glide.with(it).load(mPoi?.category?.icon?.url.toString()).into(it1)
+                }
             }
         }
 
@@ -172,23 +185,18 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     }
 
     //TODO : Cities Navigator
-    private fun goToHome() =  replaceFragment(HomeDistrictFragment(), (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager)
-    fun goToMap() = replaceFragment(MapFragment(this, selectedCity), (frgMainContext as AppCompatActivity).supportFragmentManager)
+    fun goToList() = replaceFragment(position?.let {
+        PoisDistrictListFragment(
+            retrieveDistrict,
+            selectedCity,
+            it
+        )
+    }, (frgMainContext as AppCompatActivity).supportFragmentManager)
 
-    fun goToList() = replaceFragment(position?.let { PoisDistrictListFragment(retrieveDistrict, selectedCity, it) }, (frgMainContext as AppCompatActivity).supportFragmentManager)
-
-    private fun goToDetail(mPoi: Pois?) = replaceFragment(mPoi?.let { it1 -> DetailFragment(it1, this) }, (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager)
-
-    fun closePopUp() {
-        when (popUpLocation) {
-            //TODO : Cities Navigator
-            0 -> replaceFragment(position?.let { PoisDistrictListFragment(retrieveDistrict, selectedCity, it) }, (frgMainContext as AppCompatActivity).supportFragmentManager)
-
-            1 -> replaceFragment(MapFragment(this, selectedCity), (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager)
-        }
-        buttonStop()
-    }
-
+    private fun goToDetail(mPoi: Pois?) = replaceFragment(
+        mPoi?.let { it1 -> DetailFragment(it1, this) },
+        (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager
+    )
 
     // Allows map styling and theme to be customized.
     private fun setMapStyle(map: GoogleMap) {
@@ -197,7 +205,6 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
             val success = map.setMapStyle(
                 frgMapsContext?.get()
                     ?.let { MapStyleOptions.loadRawResourceStyle(it, R.raw.map_style) })
-
             if (!success) Log.e("__MAP", "Style parsing failed.")
 
         } catch (e: Resources.NotFoundException) {
@@ -224,11 +231,24 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         isIntoPopUp = true
     }
 
-
     fun getVM(): PoisViewModel = this
 
+    /**
+    Binding functions - data binding
+     */
+    fun goToMap() = citiesNavigation.goToMap(
+        this,
+        selectedCity,
+        (frgMainContext as AppCompatActivity).supportFragmentManager
+    )
 
-    //Media player
+    fun closePopUp() {
+        when (popUpLocation) {
+            0 -> goToList()
+            1 -> goToMap()
+        }
+        buttonStop()
+    }
 
     fun buttonPlay() {
         launchTimer = mediaProgress(totalDuration, this)
@@ -253,47 +273,6 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
             vm = getVM() //Update the view with dataBinding
         }
     }
-
-    /**
-     * Map
-     */
-
-    //Util to use glide into marker
-    private fun Marker.loadIcon(context: Context, url: String?) {
-
-        Glide.with(context)
-            .asBitmap()
-            .load(url)
-            .error(R.drawable.location_icon) // to show a default icon in case of any errors
-            .listener(object : RequestListener<Bitmap> {
-
-
-                override fun onResourceReady(
-                    resource: Bitmap?,
-                    model: Any?,
-                    target: Target<Bitmap>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    return resource?.let {
-                        BitmapDescriptorFactory.fromBitmap(it)
-                    }?.let {
-                        setIcon(it)
-                        true
-                    } ?: false
-                }
-
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Bitmap>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    return false
-                }
-            }).submit()
-    }
-
 
     override fun onMapReady(googleMap: GoogleMap) {
 
@@ -325,7 +304,8 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
                 googleMap.setOnMarkerClickListener {
                     it.position.latitude
-                    val mPoi: Pois? = retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
+                    val mPoi: Pois? =
+                        retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
                     isIntoPopUp = false
                     popUpLocation = 1
                     //TODO : Cities Navigator
@@ -362,5 +342,4 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
             }
         }//When
     }
-
 }

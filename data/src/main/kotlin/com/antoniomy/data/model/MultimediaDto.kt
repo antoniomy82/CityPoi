@@ -1,6 +1,6 @@
 package com.antoniomy.data.model
 
-data class MultimediaRemote(
+data class MultimediaDto(
     var name: String? = null,
     var description: String? = null,
     var width: String? = null,

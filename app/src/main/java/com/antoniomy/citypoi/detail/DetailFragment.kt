@@ -9,8 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.databinding.PopUpPoisDetailBinding
-import com.antoniomy.domain.model.Pois
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
+//import com.antoniomy.data.model.PoisRemote
+import com.antoniomy.domain.model.Pois
 
 
 class DetailFragment(private val mPoi: Pois, private val mVm: PoisViewModel) : Fragment() {

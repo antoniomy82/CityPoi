@@ -136,15 +136,13 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintVertical_bias="1">
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:id="@+id/map_tittle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="48sp"
-                android:layout_marginLeft="48sp"
                 android:layout_weight="0.1"
                 android:fontFamily="sans-serif"
                 android:text="@string/show_on_map"
@@ -160,14 +158,14 @@
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="42sp"
-                android:layout_height="42sp"
+                android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:layout_marginEnd="28sp"
-                android:layout_marginRight="28sp"
                 android:src="@drawable/ic_map"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                tools:ignore="ContentDescription"
-                tools:layout_editor_absoluteY="0sp" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,137 +1,125 @@
 package com.antoniomy.domain
 
+import android.util.Log
 import com.antoniomy.data.DistrictRemoteDataSource
+import com.antoniomy.data.model.CategoryDto
+import com.antoniomy.data.model.DistrictDto
+import com.antoniomy.data.model.MultimediaDto
+import com.antoniomy.domain.model.Category
 import com.antoniomy.domain.model.District
-import com.antoniomy.domain.model.DistrictRemote
 import com.antoniomy.domain.model.Multimedia
 import com.antoniomy.domain.model.Pois
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import com.google.gson.GsonBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
-import javax.inject.Singleton
+import kotlinx.coroutines.launch
 
-@Module
-@InstallIn(SingletonComponent::class)
+
 class GetRemoteDistrictRepositoryImpl : GetRemoteDistrictRepository {
-    @Provides
-    @Singleton
-    override fun getRemoteDistrict(urlID: String): MutableStateFlow<District> = districtRemoteToDistrictMapper(DistrictRemoteDataSource().getDistrictList(urlID).value)
 
+    private val mapperFlow = MutableStateFlow(District())
+    private val remoteDataSource =  DistrictRemoteDataSource() //TODO pasar a hilt
+    private var remoteDistrict =remoteDataSource.retrieveDistrictDto
 
-    private fun districtRemoteToDistrictMapper(districtRemote: DistrictRemote):MutableStateFlow<District>{
+    override fun retrieveDataStatus(urlID: String): MutableStateFlow<Boolean> {
 
-        val imageMultimedia = Multimedia(
-            name = districtRemote.image?.name,
-            description = districtRemote.image?.description,
-            width = districtRemote.image?.width,
-            height = districtRemote.image?.height,
-            size = districtRemote.image?.size,
-            id = districtRemote.image?.id,
-            url = districtRemote.image?.url
-        )
-
-        val videoMultimedia = Multimedia(
-            name = districtRemote.video?.name,
-            description = districtRemote.video?.description,
-            width = districtRemote.video?.width,
-            height = districtRemote.video?.height,
-            size = districtRemote.video?.size,
-            id = districtRemote.video?.id,
-            url = districtRemote.video?.url
-        )
-
-        val audioMultimedia = Multimedia(
-            name = districtRemote.audio?.name,
-            description = districtRemote.audio?.description,
-            width = districtRemote.audio?.width,
-            height = districtRemote.audio?.height,
-            size = districtRemote.audio?.size,
-            id = districtRemote.audio?.id,
-            url = districtRemote.audio?.url
-        )
-
-        val galleryImagesMultimedia = mutableListOf<Multimedia>()
-        val galleryImgSize= districtRemote.galleryImages?.size ?:0
-            for (i in 0 .. galleryImgSize){
-                galleryImagesMultimedia.add(i ,
-                    Multimedia(
-                        name =  districtRemote.galleryImages?.get(i)?.name,
-                        description = districtRemote.galleryImages?.get(i)?.description,
-                        width = districtRemote.galleryImages?.get(i)?.width,
-                        height = districtRemote.galleryImages?.get(i)?.height,
-                        size = districtRemote.galleryImages?.get(i)?.size,
-                        id = districtRemote.galleryImages?.get(i)?.id,
-                        url = districtRemote.galleryImages?.get(i)?.url
-                    ))
-            }
-
-
-
-        val poiList = mutableListOf<Pois>()
-        val poiListSize = districtRemote.pois?.size ?:0
-            for(i in 0 .. poiListSize){
-
-                val poiImageMultimedia = Multimedia(
-                    name = districtRemote.pois?.get(i)?.image?.name,
-                    description = districtRemote.pois?.get(i)?.image?.description,
-                    width = districtRemote.pois?.get(i)?.image?.width,
-                    height = districtRemote.pois?.get(i)?.image?.height,
-                    size = districtRemote.pois?.get(i)?.image?.size,
-                    id = districtRemote.pois?.get(i)?.image?.id,
-                    url = districtRemote.pois?.get(i)?.image?.url
-                )
-
-                val poiVideoMultimedia = Multimedia(
-                    name = districtRemote.pois?.get(i)?.video?.name,
-                    description = districtRemote.pois?.get(i)?.video?.description,
-                    width = districtRemote.pois?.get(i)?.video?.width,
-                    height = districtRemote.pois?.get(i)?.video?.height,
-                    size = districtRemote.pois?.get(i)?.video?.size,
-                    id = districtRemote.pois?.get(i)?.video?.id,
-                    url = districtRemote.pois?.get(i)?.video?.url
-                )
-
-                val poiAudioMultimedia = Multimedia(
-                    name = districtRemote.pois?.get(i)?.audio?.name,
-                    description = districtRemote.pois?.get(i)?.audio?.description,
-                    width = districtRemote.pois?.get(i)?.audio?.width,
-                    height = districtRemote.pois?.get(i)?.audio?.height,
-                    size = districtRemote.pois?.get(i)?.audio?.size,
-                    id = districtRemote.pois?.get(i)?.audio?.id,
-                    url = districtRemote.pois?.get(i)?.audio?.url
-                )
-
-                poiList.add(i , Pois(
-                    likesCount = districtRemote.pois?.get(i)?.likesCount,
-                    eventsCount = districtRemote.pois?.get(i)?.eventsCount,
-                    newsCount = districtRemote.pois?.get(i)?.newsCount,
-                    id = districtRemote.pois?.get(i)?.id,
-                    image = poiImageMultimedia,
-                    galleryImages = null,
-                    latitude = districtRemote.pois?.get(i)?.latitude,
-                    longitude = districtRemote.pois?.get(i)?.longitude,
-                    category = null,
-                    premium = districtRemote.pois?.get(i)?.premium,
-                    name = districtRemote.pois?.get(i)?.name,
-                    description = districtRemote.pois?.get(i)?.description,
-                    video = poiVideoMultimedia,
-                    audio= poiAudioMultimedia,
-                    likeIt = districtRemote.pois?.get(i)?.likeIt
-                ))
-            }
-
-        return  MutableStateFlow( District(
-            poisCount = districtRemote.poisCount,
-            id = districtRemote.id,
-            name = districtRemote.name,
-            image = imageMultimedia,
-            galleryImages = galleryImagesMultimedia,
-            coordinates = districtRemote.coordinates,
-            video = videoMultimedia,
-            audio = audioMultimedia,
-            pois = poiList))
+        if(remoteDataSource.getDistrictList(urlID).value.name!=null){
+            Log.d("retrieveDATA->", "true")
+            return MutableStateFlow(true)
+        }
+      else {
+            Log.d("retrieveDATA->", "False")
+            return   MutableStateFlow(false)
+        }
     }
+
+    override fun getRemoteDistrict(urlID: String): MutableStateFlow<DistrictDto> = remoteDataSource.getDistrictList(urlID)
+    override fun districtRemoteToDistrictMapper(): MutableStateFlow<District>  {
+
+        Log.d("districtMAPPPER","dentroooo")
+        val districtDto = remoteDistrict.value
+        val poiList = mutableListOf<Pois>()
+        val poiListSize = districtDto.pois?.size ?: 0
+
+        CoroutineScope(IO).launch {
+
+            for (i in 0..poiListSize) {
+                val retrieveDistrict = districtDto.pois?.get(i)
+                poiList.add(
+                    i, Pois(
+                        likesCount = retrieveDistrict?.likesCount,
+                        eventsCount = retrieveDistrict?.eventsCount,
+                        newsCount = retrieveDistrict?.newsCount,
+                        id = retrieveDistrict?.id,
+                        image = retrieveDistrict?.image?.toMultimedia(),
+                        galleryImages = retrieveDistrict?.galleryImages?.let { toListMultimedia(it) },
+                        latitude = retrieveDistrict?.latitude,
+                        longitude = retrieveDistrict?.longitude,
+                        category = retrieveDistrict?.categoryDto?.toCategory(),
+                        premium = retrieveDistrict?.premium,
+                        name = retrieveDistrict?.name,
+                        description = retrieveDistrict?.description,
+                        video = retrieveDistrict?.video?.toMultimedia(),
+                        audio = retrieveDistrict?.audio?.toMultimedia(),
+                        likeIt = retrieveDistrict?.likeIt
+                    )
+                )
+            }
+
+            val mDistrict = District(
+                poisCount = districtDto.poisCount,
+                id = districtDto.id,
+                name = districtDto.name,
+                image = districtDto.image?.toMultimedia(),
+                galleryImages = districtDto.galleryImages?.let { toListMultimedia(it) },
+                coordinates = districtDto.coordinates,
+                video = districtDto.video?.toMultimedia(),
+                audio = districtDto.audio?.toMultimedia(),
+                pois = poiList
+            )
+
+            mapperFlow.value = mDistrict
+
+            Log.d("mDistrict", mDistrict.toString())
+        }
+
+        return mapperFlow
+
+
+    }
+
+    inline fun <reified T : Any> Any.mapTo(): T =
+        GsonBuilder().create().run { fromJson(toJson(this@mapTo), T::class.java) }
+
+    private fun CategoryDto.toCategory(): Category =
+        mapTo<Category>().copy(
+            id = id,
+            icon = icon?.toMultimedia(),
+            marker = marker?.toMultimedia(),
+            markerIcon = markerIcon?.toMultimedia(),
+            name = "$name"
+        )
+
+    private fun MultimediaDto.toMultimedia(): Multimedia =
+        mapTo<Multimedia>().copy(
+            name = "$name",
+            description = "$description",
+            width = "$width",
+            height = "$height",
+            size = size,
+            id = id,
+            url = "$url",
+        )
+
+    private fun toListMultimedia(listMultimediaDto: List<MultimediaDto>): List<Multimedia> {
+        val multimediaList = mutableListOf<Multimedia>()
+        for (i in 0..listMultimediaDto.size) {
+            multimediaList.add(i, listMultimediaDto[i].toMultimedia())
+        }
+        return multimediaList
+    }
+
 }
+
 

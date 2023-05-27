@@ -11,9 +11,8 @@ import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.databinding.AdapterHomeDistrictsBinding
 import com.antoniomy.citypoi.districtlist.PoisDistrictListFragment
 import com.antoniomy.citypoi.replaceFragment
-import com.antoniomy.domain.model.CitiesListHome
 
-class HomeDistrictAdapter( private val districtList: List<CitiesListHome>, private val context: Context) :
+class HomeDistrictAdapter(private val districtList: List<CitiesListModel>, private val context: Context) :
     RecyclerView.Adapter<HomeDistrictAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(

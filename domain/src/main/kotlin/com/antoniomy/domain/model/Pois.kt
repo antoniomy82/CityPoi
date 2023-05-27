@@ -1,7 +1,5 @@
 package com.antoniomy.domain.model
 
-import com.antoniomy.data.model.MultimediaRemote
-
 data class Pois(
     var likesCount: Int? = null,
     var eventsCount: Int? = null,
