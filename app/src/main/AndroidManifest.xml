@@ -23,7 +23,7 @@
             android:value= "@string/maps_api_key" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:screenOrientation="nosensor"
             android:exported="true">
             <intent-filter>
@@ -32,6 +32,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="nosensor"
+            android:exported="true">
+        </activity>
+
     </application>
 
 </manifest>

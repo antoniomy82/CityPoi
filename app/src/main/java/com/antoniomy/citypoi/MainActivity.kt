@@ -1,6 +1,10 @@
 package com.antoniomy.citypoi
 
 import android.os.Bundle
+import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -21,14 +25,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     //Disable automatic back button
-    @Deprecated(
-        "Deprecated in Java", ReplaceWith(
-            "Toast.makeText(this, R.string.toast_no, Toast.LENGTH_LONG).show()",
-            "android.widget.Toast",
-            "com.antoniomy82.mycities.ui.R",
-            "android.widget.Toast"
-        )
-    )
+    @Deprecated("Deprecated in Java", ReplaceWith("Toast.makeText(this, R.string.toast_no, Toast.LENGTH_LONG).show()",
+            "android.widget.Toast", "com.antoniomy82.mycities.ui.R", "android.widget.Toast"))
     override fun onBackPressed() {
         Toast.makeText(this, R.string.toast_no, Toast.LENGTH_LONG).show()
     }
