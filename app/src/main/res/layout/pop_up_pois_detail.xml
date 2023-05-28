@@ -54,7 +54,7 @@
                         android:onClick="@{()->vm.closePopUp()}"
                         android:src="@drawable/back_ios_new_24"
                         tools:ignore="ContentDescription"
-                        tools:targetApi="donut" />
+                         />
 
                     <TextView
                         android:id="@+id/title_popup"
@@ -180,7 +180,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="sans-serif-medium"
@@ -189,21 +189,8 @@
                             android:textSize="13sp"
                             android:textStyle="normal" />
 
-                        <TextView
-                            android:id="@+id/like_qty"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginEnd="4dp"
-                            android:layout_weight="0"
-                            android:fontFamily="sans-serif-medium"
-                            android:letterSpacing="0.02"
-                            android:text="@string/sample_like_qty"
-                            android:textColor="#A1887F"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
                         <ImageView
+                            android:id="@+id/icn_save"
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:layout_gravity="center"

@@ -10,7 +10,7 @@ import com.antoniomy.citypoi.viewmodel.PoisViewModel
 //import com.antoniomy.data.model.District
 //import com.antoniomy.data.model.PoisRemote
 import com.antoniomy.domain.model.District
-import com.antoniomy.domain.model.Pois
+import com.antoniomy.domain.model.Poi
 
 class CitiesNavigationImpl : CitiesNavigation {
     override fun goToHome( poisViewModel:PoisViewModel ,fragmentManager: FragmentManager) {
@@ -41,7 +41,7 @@ class CitiesNavigationImpl : CitiesNavigation {
 
     }
 
-    override fun goToDetail(mPoi: Pois?, poisVM: PoisViewModel, fragmentManager: FragmentManager) {
+    override fun goToDetail(mPoi: Poi?, poisVM: PoisViewModel, fragmentManager: FragmentManager) {
        replaceFragment(mPoi?.let { it1 -> DetailFragment(it1, poisVM) }, fragmentManager)
     }
 }

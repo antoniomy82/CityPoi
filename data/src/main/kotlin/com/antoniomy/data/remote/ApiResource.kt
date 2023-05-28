@@ -1,9 +1,8 @@
-package com.antoniomy.data.api
+package com.antoniomy.data.remote
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
-
 
 sealed class ApiResource<out T> {
     data class Success<out T>(val value: T) : ApiResource<T>()

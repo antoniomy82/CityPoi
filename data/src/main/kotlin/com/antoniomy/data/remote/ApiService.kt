@@ -1,4 +1,4 @@
-package com.antoniomy.data.api
+package com.antoniomy.data.remote
 
 import com.antoniomy.domain.model.District
 import retrofit2.http.GET

@@ -23,10 +23,10 @@ import com.antoniomy.citypoi.loadIcon
 import com.antoniomy.citypoi.mediaProgress
 import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
 import com.antoniomy.citypoi.replaceFragment
-import com.antoniomy.data.api.ApiResource
+import com.antoniomy.data.remote.ApiResource
 import com.antoniomy.data.repository.DistrictRemoteRepo
 import com.antoniomy.domain.model.District
-import com.antoniomy.domain.model.Pois
+import com.antoniomy.domain.model.Poi
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -78,7 +78,7 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
     private var mapView: WeakReference<MapView>? = null
     private var map: GoogleMap? = null
     private var isIntoPopUp: Boolean = false
-    private var selectedPoi: Pois? = null
+    private var selectedPoi: Poi? = null
     private var iconCategory: String? = null
     private var listContext: WeakReference<Context>? = null
     var selectedCity: String = ""
@@ -141,7 +141,7 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
     }
 
     //Set the POI detail in a popup
-    fun popUpDetail(mPoi: Pois?, mContext: Context? = null, popUpBinding: PopUpPoisDetailBinding) {
+    fun popUpDetail(mPoi: Poi?, mContext: Context? = null, popUpBinding: PopUpPoisDetailBinding) {
 
         //Media Player values
         myUri = Uri.parse(mPoi?.audio?.url.toString()) // initialize Uri here
@@ -177,10 +177,6 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
 
         iconCategory = mPoi?.category?.icon?.url.toString()
 
-        //Set likes counter
-        if (mPoi?.likesCount == null) popUpBinding.likeQty.text = "0"
-        else popUpBinding.likeQty.text = mPoi.likesCount.toString()
-
         selectedPoi = mPoi
         popUpBinding.vm = this //Update the view with dataBinding
 
@@ -203,7 +199,7 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
         )
     }, (frgMainContext as AppCompatActivity).supportFragmentManager)
 
-    private fun goToDetail(mPoi: Pois?) = replaceFragment(
+    private fun goToDetail(mPoi: Poi?) = replaceFragment(
         mPoi?.let { it1 -> DetailFragment(it1, this) },
         (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager
     )
@@ -314,7 +310,7 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
 
                 googleMap.setOnMarkerClickListener {
                     it.position.latitude
-                    val mPoi: Pois? =
+                    val mPoi: Poi? =
                         retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
                     isIntoPopUp = false
                     popUpLocation = 1

@@ -3,7 +3,7 @@ package com.antoniomy.data.di
 import androidx.multidex.BuildConfig
 import com.antoniomy.data.repository.DistrictRemoteRepo
 import com.antoniomy.data.repository.DistrictRemoteRepoImpl
-import com.antoniomy.data.api.ApiService
+import com.antoniomy.data.remote.ApiService
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
