@@ -1,5 +1,6 @@
 package com.antoniomy.citypoi
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.animation.Animation
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,13 +18,11 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun loadSplashScreen() {
-        // SET activity_splash.xml as layout
         val viewSplash = View.inflate(this, R.layout.activity_splash, null)
         setContentView(viewSplash)
 
-        // Gradient Animation
-        val anim = AlphaAnimation(0.1f, 1.0f) // change alpha from 0.5 to 1.0
-        anim.duration = 3000 // animate in 5000ms
+        val anim = AlphaAnimation(0.1f, 1.0f)
+        anim.duration = 3000
         viewSplash.animation = anim
         anim.setAnimationListener(
             object : Animation.AnimationListener {
@@ -33,11 +33,7 @@ class SplashActivity : AppCompatActivity() {
             })
 
         findViewById<Button>(R.id.btn_start).setOnClickListener {
-            // redirect to the other screen, such as MainActivity
-            val intent = Intent(this@SplashActivity, MainActivity::class.java)
-            startActivity(intent)
-
-            // close SplashActivity
+            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
             finish()
         }
     }
