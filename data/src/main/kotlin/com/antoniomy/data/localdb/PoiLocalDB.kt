@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.antoniomy.domain.model.Poi
+import com.antoniomy.data.model.PoisDto
 
-@Database(entities = [Poi::class], version = 1)
+@Database(entities = [PoisDto::class], version = 1)
 
 abstract class PoiLocalDB : RoomDatabase() {
 

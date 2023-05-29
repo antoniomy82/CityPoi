@@ -42,7 +42,7 @@ class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDi
         }
 
         //Set image
-        if (mDistrict.pois?.get(position)?.image?.url != null) Glide.with(holder.itemView).load(mDistrict.pois?.get(position)?.image?.url).into(holder.adapterPoisDistrictListBinding.imagePoi)
+        if (mDistrict.pois?.get(position)?.image != null) Glide.with(holder.itemView).load(mDistrict.pois?.get(position)?.image).into(holder.adapterPoisDistrictListBinding.imagePoi)
 
     }
 

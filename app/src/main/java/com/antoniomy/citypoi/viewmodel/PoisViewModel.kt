@@ -98,7 +98,11 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
             val districtsResponse = districtRemoteRepo.getDistrict(urlId)
             Log.d("----->",districtsResponse.toString())
             when (districtsResponse) {
-                is ApiResource.Success -> districtsResponse.value.let {  _fetchDistricts.value = it}
+                is ApiResource.Success -> districtsResponse.value.let {
+                    Log.d("_retrieve", it.toString())
+                    _fetchDistricts.value = it.toDomain()
+
+                }
                 is ApiResource.Error ->  _errorResponse.value=districtsResponse.errorBody.toString()
                 else -> Log.e("ERROR RESPONSE-->", "UNKNOW ERROR")
             }
@@ -144,7 +148,7 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
     fun popUpDetail(mPoi: Poi?, mContext: Context? = null, popUpBinding: PopUpPoisDetailBinding) {
 
         //Media Player values
-        myUri = Uri.parse(mPoi?.audio?.url.toString()) // initialize Uri here
+        myUri = Uri.parse(mPoi?.audio) // initialize Uri here
         mediaPlayer = MediaPlayer.create(frgMainContext, myUri)
         totalDuration = mediaPlayer?.duration?.toLong() ?: 0
         timeValue = getTimeResult(totalDuration)
@@ -156,11 +160,11 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
         popUpBinding.streetPopup.text = mPoi?.description
 
         //Set image
-        if (mPoi?.image?.url != null) {
+        if (mPoi?.image != null) {
             frgMainContext.let {
                 popUpBinding.photoPopup.let { it1 ->
                     if (it != null) {
-                        Glide.with(it).load(mPoi.image?.url).into(it1)
+                        Glide.with(it).load(mPoi.image).into(it1)
                     }
                 }
             }
@@ -170,12 +174,12 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
         frgMainContext.let {
             popUpBinding.iconPopup.let { it1 ->
                 if (it != null) {
-                    Glide.with(it).load(mPoi?.category?.icon?.url.toString()).into(it1)
+                    Glide.with(it).load(mPoi?.categoryIcon).into(it1)
                 }
             }
         }
 
-        iconCategory = mPoi?.category?.icon?.url.toString()
+        iconCategory = mPoi?.categoryIcon
 
         selectedPoi = mPoi
         popUpBinding.vm = this //Update the view with dataBinding
@@ -302,7 +306,7 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
                     frgMapsContext?.get()?.let {
                         mMarker?.loadIcon(
                             it,
-                            retrieveDistrict?.pois?.get(i)?.category?.marker?.url.toString()
+                            retrieveDistrict?.pois?.get(i)?.categoryMarker
                         )
                     }
                     map?.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, zoomLevel))
