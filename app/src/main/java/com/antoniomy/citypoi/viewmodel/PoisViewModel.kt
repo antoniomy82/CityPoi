@@ -95,7 +95,10 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
 
     fun getDistrict(urlId : String) {
         viewModelScope.launch {
+
             val districtsResponse = districtRemoteRepo.getDistrict(urlId)
+           // _fetchDistricts.value =remote.getDistrictList(urlId).toDomain()
+
             Log.d("----->",districtsResponse.toString())
             when (districtsResponse) {
                 is RemoteStatus.Success -> districtsResponse.value.let {
@@ -105,7 +108,11 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
                 }
                 is RemoteStatus.Error ->  _errorResponse.value=districtsResponse.errorBody.toString()
                 else -> Log.e("ERROR RESPONSE-->", "UNKNOW ERROR")
+
+
             }
+
+
         }
     }
 

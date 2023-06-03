@@ -7,8 +7,6 @@ import com.antoniomy.citypoi.homedistrict.HomeDistrictFragment
 import com.antoniomy.citypoi.map.MapFragment
 import com.antoniomy.citypoi.replaceFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
-//import com.antoniomy.data.model.District
-//import com.antoniomy.data.model.PoisRemote
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Poi
 
