@@ -39,6 +39,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
@@ -94,28 +95,9 @@ class PoisViewModel @Inject constructor(private val districtRemote: DistrictRemo
 
     fun getDistrict(urlId : String) {
         viewModelScope.launch {
-
-          //  val districtsResponse = districtRemoteRepo.getDistrict(urlId)
-           // _fetchDistricts.value =remote.getDistrictList(urlId).toDomain()
-
-
-            _fetchDistricts = districtRemote.getDistrictList(urlId) //DistrictsRepository(urlId).remoteDistrictRepository
-
-    /*
-            Log.d("----->",districtsResponse.toString())
-            when (districtsResponse) {
-                is RemoteStatus.Success -> districtsResponse.value.let {
-                    Log.d("_retrieve", it.toString())
-                    _fetchDistricts.value = it
-
-                }
-                is RemoteStatus.Error ->  _errorResponse.value=districtsResponse.errorBody.toString()
-                else -> Log.e("ERROR RESPONSE-->", "UNKNOW ERROR")
-
-
+            districtRemote.getDistrictList(urlId).collect{
+                _fetchDistricts.value=it
             }
-
-*/
         }
     }
 

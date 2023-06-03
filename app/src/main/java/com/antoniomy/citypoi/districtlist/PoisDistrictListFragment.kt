@@ -1,6 +1,7 @@
 package com.antoniomy.citypoi.districtlist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +28,6 @@ class PoisDistrictListFragment(
 
     private lateinit var fragmentDistrictListBinding: FragmentDistrictListBinding
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,14 +40,10 @@ class PoisDistrictListFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initObservers()
-
         setUI()
         context?.let { poisViewModel.frgMainContext = it }
-
-        poisViewModel.getDistrict("$urlID")
-     }
+    }
 
 
     private fun setUI() {
@@ -61,23 +57,38 @@ class PoisDistrictListFragment(
             replaceFragment(HomeDistrictFragment(poisViewModel), parentFragmentManager)
         }
 
+        poisViewModel.getDistrict("$urlID")
     }
 
     private fun initObservers() {
 
-        poisViewModel.fetchDistricts.collectInLifeCycle(viewLifecycleOwner) {
-            setTittleFromAdapter(isEmpty = true)
-            it.let {
-                poisViewModel.retrieveDistrict = it
-                setDistrictListRecyclerViewAdapter(it)
-                if (it.name != null) {
-                    setTittleFromAdapter(
-                        it.name.toString(),
-                        it.pois?.size.toString()
-                    )
-                }
-                fragmentDistrictListBinding.poisVM = poisViewModel //update VM content
+        when (mDistrict) {
+            null -> {
+                poisViewModel.fetchDistricts.collectInLifeCycle(viewLifecycleOwner) { it ->
+                    setTittleFromAdapter(isEmpty = true)
 
+                    it.let {
+                        poisViewModel.retrieveDistrict = it
+                        setDistrictListRecyclerViewAdapter(it)
+                        if (it.name != null) {
+                            setTittleFromAdapter(
+                                it.name.toString(),
+                                it.pois?.size.toString()
+                            )
+                        }
+                        fragmentDistrictListBinding.poisVM = poisViewModel
+                    }
+                }
+            }
+
+            else -> {
+                poisViewModel.retrieveDistrict = mDistrict
+                setDistrictListRecyclerViewAdapter(mDistrict)
+                setTittleFromAdapter(
+                    mDistrict.name.toString(),
+                    mDistrict.pois?.size.toString(),
+                )
+                fragmentDistrictListBinding.poisVM = poisViewModel
             }
         }
 

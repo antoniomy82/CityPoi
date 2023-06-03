@@ -92,9 +92,6 @@ fun Marker.loadIcon(context: Context, url: String?) {
 }
 
 /** A sample use: viewModel.event.onEach(::renderEvent).launchInLifeCycle(viewLifecycleOwner) */
-inline fun <reified T> Flow<T>.launchInLifeCycle(lifecycleOwner: LifecycleOwner) =
-    lifecycleOwner.lifecycleScope.launch { flowWithLifecycle(lifecycleOwner.lifecycle).collect() }
-
 inline fun <reified T> Flow<T>.collectInLifeCycle(lifecycleOwner: LifecycleOwner, noinline collector: suspend (T) -> Unit) {
     lifecycleOwner.lifecycleScope.launch { flowWithLifecycle(lifecycleOwner.lifecycle).onEach(collector).collect() }
 }

@@ -29,9 +29,6 @@ class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDi
         holder.adapterPoisDistrictListBinding.apply {
             poisVm = poisVm
             namePoi.text = mDistrict.pois?.get(position)?.name
-
-            // if( mDistrict.pois?.get(position)?.likesCount==null) holder.adapterPoisDistrictListBinding.likeQty.text = "0"
-            // else holder.adapterPoisDistrictListBinding.likeQty.text = mDistrict.pois?.get(position)?.likesCount.toString()
         }
 
         holder.adapterPoisDistrictListBinding.root.setOnClickListener {

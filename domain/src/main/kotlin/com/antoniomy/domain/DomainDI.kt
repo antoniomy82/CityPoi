@@ -18,5 +18,5 @@ object DomainDI {
 
     @Provides
     @Singleton
-    fun providesCharactersRepo (remoteService: RemoteService): DistrictRemote = DistrictRemoteImpl(remoteService)
+    fun providesDistrictRemoteRepo (remoteService: RemoteService): DistrictRemote = DistrictRemoteImpl(remoteService)
 }
