@@ -1,9 +1,7 @@
-package com.antoniomy.citypoi.viewmodel
+package com.antoniomy.domain.model
 
 import com.antoniomy.data.model.DistrictDto
 import com.antoniomy.data.model.PoisDto
-import com.antoniomy.domain.model.District
-import com.antoniomy.domain.model.Poi
 
 fun DistrictDto.toDomain(): District = District(name = name, pois = pois?.toDomain())
 

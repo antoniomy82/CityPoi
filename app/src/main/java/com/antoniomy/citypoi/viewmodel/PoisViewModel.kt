@@ -23,8 +23,7 @@ import com.antoniomy.citypoi.loadIcon
 import com.antoniomy.citypoi.mediaProgress
 import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
 import com.antoniomy.citypoi.replaceFragment
-import com.antoniomy.data.remote.DistrictRemoteRepo
-import com.antoniomy.data.remote.RemoteStatus
+import com.antoniomy.domain.DistrictRemote
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Poi
 import com.bumptech.glide.Glide
@@ -46,7 +45,7 @@ import javax.inject.Inject
 import kotlin.properties.Delegates
 
 @HiltViewModel
-class PoisViewModel @Inject constructor(private val districtRemoteRepo: DistrictRemoteRepo): ViewModel(), OnMapReadyCallback {
+class PoisViewModel @Inject constructor(private val districtRemote: DistrictRemote) : ViewModel(), OnMapReadyCallback {
 
     //Main Fragment values
     var frgMainContext: Context? = null
@@ -96,14 +95,18 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
     fun getDistrict(urlId : String) {
         viewModelScope.launch {
 
-            val districtsResponse = districtRemoteRepo.getDistrict(urlId)
+          //  val districtsResponse = districtRemoteRepo.getDistrict(urlId)
            // _fetchDistricts.value =remote.getDistrictList(urlId).toDomain()
 
+
+            _fetchDistricts = districtRemote.getDistrictList(urlId) //DistrictsRepository(urlId).remoteDistrictRepository
+
+    /*
             Log.d("----->",districtsResponse.toString())
             when (districtsResponse) {
                 is RemoteStatus.Success -> districtsResponse.value.let {
                     Log.d("_retrieve", it.toString())
-                    _fetchDistricts.value = it.toDomain()
+                    _fetchDistricts.value = it
 
                 }
                 is RemoteStatus.Error ->  _errorResponse.value=districtsResponse.errorBody.toString()
@@ -112,7 +115,7 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
 
             }
 
-
+*/
         }
     }
 

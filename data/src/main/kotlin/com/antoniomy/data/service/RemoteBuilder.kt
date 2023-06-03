@@ -1,9 +1,7 @@
-package com.antoniomy.data.di
+package com.antoniomy.data.service
+
 
 import androidx.multidex.BuildConfig
-import com.antoniomy.data.remote.DistrictRemoteRepo
-import com.antoniomy.data.remote.RemoteDto
-import com.antoniomy.data.remote.DistrictRemoteRepoImpl
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -21,7 +19,7 @@ const val timeOut: Long = 60
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object RemoteBuilder {
 
     @Provides
     fun providesOkhttp():OkHttpClient{
@@ -48,13 +46,4 @@ object AppModule {
         .client(okHttpClient)
         .baseUrl(urlCities)
         .build()
-
-    @Provides
-    @Singleton
-    fun apiService(retrofit: Retrofit): RemoteDto = retrofit.create(RemoteDto::class.java)
-
-    @Provides
-    @Singleton
-    fun providesCharactersRepo(remoteDto: RemoteDto): DistrictRemoteRepo = DistrictRemoteRepoImpl(remoteDto)
-
 }

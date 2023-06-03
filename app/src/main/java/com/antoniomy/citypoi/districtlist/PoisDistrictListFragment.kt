@@ -33,7 +33,8 @@ class PoisDistrictListFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        fragmentDistrictListBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_district_list, container, false)
+        fragmentDistrictListBinding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_district_list, container, false)
         return fragmentDistrictListBinding.root
     }
 
@@ -41,11 +42,12 @@ class PoisDistrictListFragment(
         super.onViewCreated(view, savedInstanceState)
 
         initObservers()
+
         setUI()
         context?.let { poisViewModel.frgMainContext = it }
-        poisViewModel.getDistrict("$urlID")
 
-    }
+        poisViewModel.getDistrict("$urlID")
+     }
 
 
     private fun setUI() {
@@ -61,47 +63,29 @@ class PoisDistrictListFragment(
 
     }
 
-    private fun initObservers(){
-        when (mDistrict) {
-            null -> {
-                poisViewModel.fetchDistricts.collectInLifeCycle(viewLifecycleOwner){
-                    setTittleFromAdapter(isEmpty = true)
-                    setObserverIntoViewModel(it)
-                }
+    private fun initObservers() {
 
-                poisViewModel.errorResponse.collectInLifeCycle(viewLifecycleOwner) { errorMessage ->
-                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+        poisViewModel.fetchDistricts.collectInLifeCycle(viewLifecycleOwner) {
+            setTittleFromAdapter(isEmpty = true)
+            it.let {
+                poisViewModel.retrieveDistrict = it
+                setDistrictListRecyclerViewAdapter(it)
+                if (it.name != null) {
+                    setTittleFromAdapter(
+                        it.name.toString(),
+                        it.pois?.size.toString()
+                    )
                 }
-            }
+                fragmentDistrictListBinding.poisVM = poisViewModel //update VM content
 
-            else -> {
-                poisViewModel.retrieveDistrict = mDistrict
-                setDistrictListRecyclerViewAdapter(mDistrict)
-                setTittleFromAdapter(
-                    mDistrict.name.toString(),
-                    mDistrict.pois?.size.toString(),
-                )
-                fragmentDistrictListBinding.poisVM = poisViewModel
             }
         }
 
-
-
-    }
-    private fun setObserverIntoViewModel(retrieveDistrict: District) {
-
-        retrieveDistrict.let {
-            poisViewModel.retrieveDistrict = it
-            setDistrictListRecyclerViewAdapter(it)
-            if (it.name != null) {
-                setTittleFromAdapter(
-                    it.name.toString(),
-                    it.pois?.size.toString()
-                )
-            }
-            fragmentDistrictListBinding.poisVM = poisViewModel //update VM content
+        poisViewModel.errorResponse.collectInLifeCycle(viewLifecycleOwner) { errorMessage ->
+            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
         }
     }
+
 
     private fun setDistrictListRecyclerViewAdapter(mDistrict: District) {
         val recyclerView: RecyclerView = view?.findViewById(R.id.rvPois) as RecyclerView

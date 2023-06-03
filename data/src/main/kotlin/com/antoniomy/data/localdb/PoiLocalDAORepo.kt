@@ -2,7 +2,7 @@ package com.antoniomy.data.localdb
 
 import android.content.Context
 import android.util.Log
-import com.antoniomy.domain.model.Poi
+import com.antoniomy.data.model.PoisDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,7 +16,7 @@ class PoiLocalDAORepo {
         return PoiLocalDB.getDatabaseClient(context)
     }
 
-    fun insertPoi(context: Context, poi: Poi): Boolean {
+    fun insertPoi(context: Context, poi: PoisDto): Boolean {
 
         var operationStatus = false
 
@@ -50,9 +50,9 @@ class PoiLocalDAORepo {
         return operationStatus
     }
 
-    fun fetchPois(context: Context): List<Poi> {
+    fun fetchPois(context: Context): List<PoisDto> {
 
-        val mList = mutableListOf<Poi>()
+        val mList = mutableListOf<PoisDto>()
 
         poiLocalDB = initializeDB(context)
 
