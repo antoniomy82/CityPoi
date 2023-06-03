@@ -1,9 +1,9 @@
 package com.antoniomy.data.di
 
 import androidx.multidex.BuildConfig
-import com.antoniomy.data.repository.DistrictRemoteRepo
-import com.antoniomy.data.remote.ApiService
-import com.antoniomy.data.repository.DistrictRemoteRepoImpl
+import com.antoniomy.data.remote.DistrictRemoteRepo
+import com.antoniomy.data.remote.RemoteDto
+import com.antoniomy.data.remote.DistrictRemoteRepoImpl
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -51,10 +51,10 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun apiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
+    fun apiService(retrofit: Retrofit): RemoteDto = retrofit.create(RemoteDto::class.java)
 
     @Provides
     @Singleton
-    fun providesCharactersRepo(apiService: ApiService): DistrictRemoteRepo = DistrictRemoteRepoImpl(apiService)
+    fun providesCharactersRepo(remoteDto: RemoteDto): DistrictRemoteRepo = DistrictRemoteRepoImpl(remoteDto)
 
 }

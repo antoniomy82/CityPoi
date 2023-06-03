@@ -23,8 +23,8 @@ import com.antoniomy.citypoi.loadIcon
 import com.antoniomy.citypoi.mediaProgress
 import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
 import com.antoniomy.citypoi.replaceFragment
-import com.antoniomy.data.remote.ApiResource
-import com.antoniomy.data.repository.DistrictRemoteRepo
+import com.antoniomy.data.remote.DistrictRemoteRepo
+import com.antoniomy.data.remote.RemoteStatus
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Poi
 import com.bumptech.glide.Glide
@@ -98,12 +98,12 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepo: District
             val districtsResponse = districtRemoteRepo.getDistrict(urlId)
             Log.d("----->",districtsResponse.toString())
             when (districtsResponse) {
-                is ApiResource.Success -> districtsResponse.value.let {
+                is RemoteStatus.Success -> districtsResponse.value.let {
                     Log.d("_retrieve", it.toString())
                     _fetchDistricts.value = it.toDomain()
 
                 }
-                is ApiResource.Error ->  _errorResponse.value=districtsResponse.errorBody.toString()
+                is RemoteStatus.Error ->  _errorResponse.value=districtsResponse.errorBody.toString()
                 else -> Log.e("ERROR RESPONSE-->", "UNKNOW ERROR")
             }
         }
