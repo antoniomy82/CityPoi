@@ -26,4 +26,16 @@ fun List<PoisDto>.toDomain(): List<Poi> {
     return poiList
 }
 
+fun Poi.toData(): PoisDto = PoisDto(
+    imageLocal = this.image,
+    latitude = this.latitude,
+    longitude = this.longitude,
+    categoryIcon = this.categoryIcon,
+    categoryMarker = this.categoryMarker,
+    name = this.name,
+    description = this.description,
+    audioLocal =this.audio,
+    city = this.city,
+    district = this.district
+)
 

@@ -1,4 +1,4 @@
-package com.antoniomy.data.localdb
+package com.antoniomy.data.repository
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -10,10 +10,10 @@ import com.antoniomy.data.model.PoisDto
 interface PoiLocalDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPoi(poi: PoisDto)
+    fun insertPoi(poi: PoisDto): Boolean
 
     @Query("DELETE FROM Poi WHERE name =:name")
-    fun deletePoi(name: String)
+    fun deletePoi(name: String): Boolean
 
     @Query("SELECT * FROM Poi")
     fun fetchPois(): List<PoisDto>

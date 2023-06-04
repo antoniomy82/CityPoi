@@ -1,8 +1,8 @@
 package com.antoniomy.domain
 
 import android.util.Log
-import com.antoniomy.data.service.RemoteService
-import com.antoniomy.data.service.urlCities
+import com.antoniomy.data.repository.RemoteService
+import com.antoniomy.data.repository.urlCities
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.toDomain
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +12,7 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 
-class DistrictRemoteImpl @Inject constructor(private val remoteService: RemoteService) : DistrictRemote {
+class DistrictRemoteRepositoryImpl @Inject constructor(private val remoteService: RemoteService) : DistrictRemoteRepository {
 
 
     override suspend fun getDistrictList(urlId: String): MutableStateFlow<District> =

@@ -22,7 +22,8 @@ import com.antoniomy.citypoi.loadIcon
 import com.antoniomy.citypoi.mediaProgress
 import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
 import com.antoniomy.citypoi.replaceFragment
-import com.antoniomy.domain.DistrictRemote
+import com.antoniomy.domain.DistrictRemoteRepository
+import com.antoniomy.domain.PoiLocalRepository
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Poi
 import com.bumptech.glide.Glide
@@ -42,7 +43,7 @@ import javax.inject.Inject
 import kotlin.properties.Delegates
 
 @HiltViewModel
-class PoisViewModel @Inject constructor(private val districtRemote: DistrictRemote) : ViewModel(), OnMapReadyCallback {
+class PoisViewModel @Inject constructor(private val districtRemoteRepository: DistrictRemoteRepository, private val localRepository: PoiLocalRepository) : ViewModel(), OnMapReadyCallback {
 
     private var _fetchDistricts = MutableStateFlow(District())
     val fetchDistricts: StateFlow<District> get() = _fetchDistricts
@@ -84,7 +85,7 @@ class PoisViewModel @Inject constructor(private val districtRemote: DistrictRemo
 
     fun getDistrict(urlId: String) {
         viewModelScope.launch {
-            districtRemote.getDistrictList(urlId).collect {
+            districtRemoteRepository.getDistrictList(urlId).collect {
                 _fetchDistricts.value = it
             }
         }
