@@ -91,16 +91,12 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepository: Di
         }
     }
 
-
     fun setMapsUI() {
-        //Top bar title
-        fragmentMapBinding?.headerId?.headerTitle?.text = selectedCity
+        fragmentMapBinding?.headerId?.headerTitle?.text = selectedCity //Top bar title
 
-        //Back arrow
-        fragmentMapBinding?.headerId?.headerBack?.setOnClickListener {
+        fragmentMapBinding?.headerId?.headerBack?.setOnClickListener {//Back arrow
             citiesNavigation.goToHome(this, (fragmentMapBinding?.root?.context as AppCompatActivity).supportFragmentManager)
         }
-
 
         if (retrieveDistrict != null) {
             districtTittle.value = retrieveDistrict?.name?.uppercase()
@@ -187,8 +183,6 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepository: Di
 
     //Map fragment
     private fun loadMap() {
-
-       // mapView = fragmentMapBinding?.map
         fragmentMapBinding?.map?.onCreate(mapsBundle)
         fragmentMapBinding?.map?.onResume()
         fragmentMapBinding?.map?.getMapAsync(this)
@@ -205,9 +199,6 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepository: Di
 
     fun getVM(): PoisViewModel = this
 
-    /**
-    Binding functions - data binding
-     */
     fun goToMap() = citiesNavigation.goToMap(this, selectedCity, (fragmentPoisListBinding.root.context as AppCompatActivity).supportFragmentManager)
 
     fun closePopUp() {
@@ -243,7 +234,6 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepository: Di
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-
         googleMap.let { map = it }
         googleMap.uiSettings.isZoomControlsEnabled = true //Zoom in/out
 
