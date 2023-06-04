@@ -34,7 +34,7 @@ class DetailFragment(private val mPoi: Poi, private val mVm: PoisViewModel) : Fr
         poisViewModel= mVm
         poisViewModel?.popUpBinding=popUpPoisDetailBinding
 
-        popUpPoisDetailBinding?.let { poisViewModel?.popUpDetail(mPoi, context, it) }
+        popUpPoisDetailBinding?.let { poisViewModel?.popUpDetail(mPoi, it) }
 
         context?.let { localDbStatus(it) }
     }

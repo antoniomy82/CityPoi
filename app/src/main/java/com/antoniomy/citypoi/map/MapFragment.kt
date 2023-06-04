@@ -32,14 +32,8 @@ class MapFragment(val poisVM: PoisViewModel, private var cityName: String? = nul
         super.onViewCreated(view, savedInstanceState)
 
         //Set fragment parameters in vm
-        context?.let { it1 ->
-            fragmentMapBinding?.let { it2 ->
-                poisVM.setMapsFragmentBinding(
-                    it1, view,
-                    it2, savedInstanceState
-                )
-            }
-        }
+        fragmentMapBinding?.let { poisVM.setMapsFragmentBinding(it, savedInstanceState) }
+
         poisVM.setMapsUI()
         poisVM.selectedCity = cityName.toString()
     }

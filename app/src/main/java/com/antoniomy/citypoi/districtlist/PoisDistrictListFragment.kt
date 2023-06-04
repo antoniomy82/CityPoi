@@ -1,7 +1,6 @@
 package com.antoniomy.citypoi.districtlist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,8 +32,7 @@ class PoisDistrictListFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        fragmentDistrictListBinding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_district_list, container, false)
+        fragmentDistrictListBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_district_list, container, false)
         return fragmentDistrictListBinding.root
     }
 
@@ -42,7 +40,7 @@ class PoisDistrictListFragment(
         super.onViewCreated(view, savedInstanceState)
         initObservers()
         setUI()
-        context?.let { poisViewModel.frgMainContext = it }
+        poisViewModel.fragmentPoisListBinding = fragmentDistrictListBinding
     }
 
 
