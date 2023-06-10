@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.databinding.FragmentDistrictListBinding
-import com.antoniomy.citypoi.homedistrict.HomeDistrictFragment
+import com.antoniomy.citypoi.home.HomeDistrictFragment
 import com.antoniomy.citypoi.main.collectInLifeCycle
 import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel

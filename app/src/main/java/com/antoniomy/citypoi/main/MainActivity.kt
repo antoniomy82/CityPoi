@@ -5,7 +5,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.antoniomy.citypoi.R
-import com.antoniomy.citypoi.homedistrict.HomeDistrictFragment
+import com.antoniomy.citypoi.home.HomeDistrictFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

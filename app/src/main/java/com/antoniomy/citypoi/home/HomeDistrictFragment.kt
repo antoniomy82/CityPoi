@@ -1,4 +1,4 @@
-package com.antoniomy.citypoi.homedistrict
+package com.antoniomy.citypoi.home
 
 import android.os.Bundle
 import android.view.LayoutInflater

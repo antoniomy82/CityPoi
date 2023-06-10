@@ -3,7 +3,7 @@ package com.antoniomy.citypoi.navigation
 import androidx.fragment.app.FragmentManager
 import com.antoniomy.citypoi.detail.DetailFragment
 import com.antoniomy.citypoi.districtlist.PoisDistrictListFragment
-import com.antoniomy.citypoi.homedistrict.HomeDistrictFragment
+import com.antoniomy.citypoi.home.HomeDistrictFragment
 import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.map.MapFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel

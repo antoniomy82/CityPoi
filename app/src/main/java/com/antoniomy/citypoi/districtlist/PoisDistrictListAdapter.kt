@@ -17,14 +17,8 @@ class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDi
     RecyclerView.Adapter<PoisDistrictListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
-        DataBindingUtil.inflate(
-            LayoutInflater.from(parent.context),
-            R.layout.adapter_pois_district_list,
-            parent, false)
-    )
+        DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.adapter_pois_district_list, parent, false))
 
-
-    //Binding each element with object element
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.adapterPoisDistrictListBinding.apply {
             poisVm = poisVm

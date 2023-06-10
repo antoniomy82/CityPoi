@@ -1,4 +1,4 @@
-package com.antoniomy.citypoi.homedistrict
+package com.antoniomy.citypoi.home
 
 data class CitiesListModel(
     var cityName: String? = "",
