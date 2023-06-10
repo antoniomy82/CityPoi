@@ -1,6 +1,5 @@
 package com.antoniomy.citypoi.detail
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,15 +12,9 @@ import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.Poi
 
 
-class DetailFragment(private val mPoi: Poi, private val mVm: PoisViewModel) : Fragment() {
+class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel) : Fragment() {
 
-    private var poisViewModel: PoisViewModel? = null
     private var popUpPoisDetailBinding: PopUpPoisDetailBinding?=null
-
-    //Repository variables
-//    private val localRepository = PoiLocalDAORepo() //TODO hilt
-
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         popUpPoisDetailBinding = DataBindingUtil.inflate(inflater, R.layout.pop_up_pois_detail, container, false)
@@ -31,24 +24,16 @@ class DetailFragment(private val mPoi: Poi, private val mVm: PoisViewModel) : Fr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        poisViewModel= mVm
-        poisViewModel?.popUpBinding=popUpPoisDetailBinding
-
-        popUpPoisDetailBinding?.let { poisViewModel?.popUpDetail(mPoi, it) }
-
-        context?.let { localDbStatus(it) }
+        viewModel.popUpBinding =popUpPoisDetailBinding
+        popUpPoisDetailBinding?.let { viewModel.popUpDetail(mPoi, it) }
+         initLocalDbOptions()
     }
 
-    private fun localDbStatus(context: Context) {
-
+    private fun initLocalDbOptions() {
         //Save
         popUpPoisDetailBinding?.icnSave?.setOnClickListener {
-
-            poisViewModel?.insertLocalPoi(context ,mPoi)
-
+           viewModel.insertLocalPoi(mPoi)
         }
-
-
     }
 
 }

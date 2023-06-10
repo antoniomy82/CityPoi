@@ -1,4 +1,4 @@
-package com.antoniomy.data.repository.remote
+package com.antoniomy.data.repository
 
 
 import androidx.multidex.BuildConfig

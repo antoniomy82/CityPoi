@@ -1,8 +1,8 @@
 package com.antoniomy.domain.datasource.remote
 
 import android.util.Log
-import com.antoniomy.data.repository.remote.RemoteService
-import com.antoniomy.data.repository.remote.urlCities
+import com.antoniomy.data.repository.RemoteService
+import com.antoniomy.data.repository.urlCities
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.toDomain
 import kotlinx.coroutines.Dispatchers

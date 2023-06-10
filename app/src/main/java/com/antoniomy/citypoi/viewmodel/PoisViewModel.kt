@@ -1,6 +1,5 @@
 package com.antoniomy.citypoi.viewmodel
 
-import android.content.Context
 import android.content.res.Resources
 import android.media.MediaPlayer
 import android.net.Uri
@@ -23,7 +22,8 @@ import com.antoniomy.citypoi.loadIcon
 import com.antoniomy.citypoi.mediaProgress
 import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
 import com.antoniomy.citypoi.replaceFragment
-import com.antoniomy.domain.datasource.local.LocalDb
+import com.antoniomy.domain.datasource.local.LocalRepository
+import com.antoniomy.domain.datasource.local.LocalRepositoryImpl
 import com.antoniomy.domain.datasource.remote.RemoteRepository
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Poi
@@ -44,7 +44,7 @@ import javax.inject.Inject
 import kotlin.properties.Delegates
 
 @HiltViewModel
-class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepository, private val localDb: LocalDb) : ViewModel(), OnMapReadyCallback {
+class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepository, private val localRepository: LocalRepository) : ViewModel(), OnMapReadyCallback {
 
     private var _fetchDistricts = MutableStateFlow(District())
     val fetchDistricts: StateFlow<District> get() = _fetchDistricts
@@ -262,15 +262,10 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
         }//When
     }
 
-    fun insertLocalPoi(context:Context, mPoi: Poi) {
-        //localRepository.initializeDB(context)
+    fun insertLocalPoi(mPoi: Poi) = localRepository.insertPoi(mPoi)
 
+    fun deleteLocalPoi(name: String) = localRepository.deletePoi(name)
 
-        localDb.insertPoi(context, mPoi)
-    }
-
-    //fun deleteLocalPoi(context:Context, name: String) = localRepository.deletePoi(context, name)
-
-    //fun fetchLocalPois(context: Context) : List<Poi> = localRepository.fetchPois(context)
+    fun fetchLocalPois() : List<Poi> = localRepository.fetchPoiList()
 
 }
