@@ -43,13 +43,9 @@ class DetailFragment(private val mPoi: Poi, private val mVm: PoisViewModel) : Fr
 
         //Save
         popUpPoisDetailBinding?.icnSave?.setOnClickListener {
-            /*
-            if(localRepository.insertPoi(context ,mPoi)) {
-                Toast.makeText(context, "Poi Salvado in DB", Toast.LENGTH_LONG).show()
-                popUpPoisDetailBinding?.icnSave?.visibility = View.GONE
-            }else   Toast.makeText(context, "Poi NO GUARDADO in DB", Toast.LENGTH_LONG).show()
 
-             */
+            poisViewModel?.insertLocalPoi(context ,mPoi)
+
         }
 
 

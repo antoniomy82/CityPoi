@@ -1,10 +1,9 @@
 package com.antoniomy.domain.di
 
-import com.antoniomy.data.repository.RemoteService
-import com.antoniomy.domain.DistrictRemoteRepository
-import com.antoniomy.domain.DistrictRemoteRepositoryImpl
-import com.antoniomy.domain.PoiLocalRepository
-import com.antoniomy.domain.PoiLocalRepositoryImpl
+import com.antoniomy.data.repository.remote.RemoteService
+import com.antoniomy.domain.datasource.local.LocalDb
+import com.antoniomy.domain.datasource.remote.RemoteRepository
+import com.antoniomy.domain.datasource.remote.RemoteRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,9 +21,10 @@ object DomainDI {
 
     @Provides
     @Singleton
-    fun providesDistrictRemoteRepo (remoteService: RemoteService): DistrictRemoteRepository = DistrictRemoteRepositoryImpl(remoteService)
+    fun providesDistrictRemoteRepo (remoteService: RemoteService): RemoteRepository = RemoteRepositoryImpl(remoteService)
 
     @Provides
     @Singleton
-    fun providesPoiLocalRepo (): PoiLocalRepository = PoiLocalRepositoryImpl()
+    fun providesLocalRepo (): LocalDb= LocalDb()
+
 }

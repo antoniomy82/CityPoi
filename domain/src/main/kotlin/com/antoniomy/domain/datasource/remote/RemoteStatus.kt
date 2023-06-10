@@ -1,4 +1,4 @@
-package com.antoniomy.domain
+package com.antoniomy.domain.datasource.remote
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

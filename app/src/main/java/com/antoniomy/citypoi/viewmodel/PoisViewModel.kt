@@ -1,5 +1,6 @@
 package com.antoniomy.citypoi.viewmodel
 
+import android.content.Context
 import android.content.res.Resources
 import android.media.MediaPlayer
 import android.net.Uri
@@ -22,8 +23,8 @@ import com.antoniomy.citypoi.loadIcon
 import com.antoniomy.citypoi.mediaProgress
 import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
 import com.antoniomy.citypoi.replaceFragment
-import com.antoniomy.domain.DistrictRemoteRepository
-import com.antoniomy.domain.PoiLocalRepository
+import com.antoniomy.domain.datasource.local.LocalDb
+import com.antoniomy.domain.datasource.remote.RemoteRepository
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Poi
 import com.bumptech.glide.Glide
@@ -43,7 +44,7 @@ import javax.inject.Inject
 import kotlin.properties.Delegates
 
 @HiltViewModel
-class PoisViewModel @Inject constructor(private val districtRemoteRepository: DistrictRemoteRepository, private val localRepository: PoiLocalRepository) : ViewModel(), OnMapReadyCallback {
+class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepository, private val localDb: LocalDb) : ViewModel(), OnMapReadyCallback {
 
     private var _fetchDistricts = MutableStateFlow(District())
     val fetchDistricts: StateFlow<District> get() = _fetchDistricts
@@ -66,12 +67,11 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepository: Di
 
     //Global values
     var retrieveDistrict: District? = null
+    var selectedCity: String = ""
     private var map: GoogleMap? = null
     private var isIntoPopUp: Boolean = false
     private var selectedPoi: Poi? = null
     private var iconCategory: String? = null
-
-    var selectedCity: String = ""
     private lateinit var timeValue: String
 
     //Media player
@@ -84,11 +84,7 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepository: Di
     var popUpLocation: Int = 0
 
     fun getDistrict(urlId: String) {
-        viewModelScope.launch {
-            districtRemoteRepository.getDistrictList(urlId).collect {
-                _fetchDistricts.value = it
-            }
-        }
+        viewModelScope.launch { remoteRepository.getDistrictList(urlId).collect { _fetchDistricts.value = it } }
     }
 
     fun setMapsUI() {
@@ -133,25 +129,16 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepository: Di
         //Set image
         if (mPoi?.image != null) {
             popUpBinding.root.context.let {
-                popUpBinding.photoPopup.let { it1 ->
-                    if (it != null) {
-                        Glide.with(it).load(mPoi.image).into(it1)
-                    }
-                }
+                popUpBinding.photoPopup.let { it1 -> if (it != null) { Glide.with(it).load(mPoi.image).into(it1) } }
             }
         }
 
         //Set icon image
         popUpBinding.root.context.let {
-            popUpBinding.iconPopup.let { it1 ->
-                if (it != null) {
-                    Glide.with(it).load(mPoi?.categoryIcon).into(it1)
-                }
-            }
+            popUpBinding.iconPopup.let { it1 -> if (it != null) { Glide.with(it).load(mPoi?.categoryIcon).into(it1) } }
         }
 
         iconCategory = mPoi?.categoryIcon
-
         selectedPoi = mPoi
         popUpBinding.vm = this //Update the view with dataBinding
 
@@ -163,22 +150,12 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepository: Di
         PoisDistrictListFragment(retrieveDistrict, selectedCity, it, this)
     }, (fragmentPoisListBinding.root.context as AppCompatActivity).supportFragmentManager)
 
-    private fun goToDetail(mPoi: Poi?) = replaceFragment(mPoi?.let { it1 -> DetailFragment(it1, this) },
-        (fragmentMapBinding?.root?.context as AppCompatActivity).supportFragmentManager)
+    private fun goToDetail(mPoi: Poi?) = replaceFragment(mPoi?.let { it1 -> DetailFragment(it1, this) }, (fragmentMapBinding?.root?.context as AppCompatActivity).supportFragmentManager)
 
-    // Allows map styling and theme to be customized.
     private fun setMapStyle(map: GoogleMap) {
-        try {
-            // Customize the styling of the base map using a JSON object defined, in a raw resource file
-            val success = map.setMapStyle(
-                fragmentMapBinding?.root?.context?.let {
-                    MapStyleOptions.loadRawResourceStyle(it, R.raw.map_style)
-                })
+        try { val success = map.setMapStyle(fragmentMapBinding?.root?.context?.let { MapStyleOptions.loadRawResourceStyle(it, R.raw.map_style) })
             if (!success) Log.e("__MAP", "Style parsing failed.")
-
-        } catch (e: Resources.NotFoundException) {
-            Log.e("__MAP", "Can't find style. Error: ", e)
-        }
+        } catch (e: Resources.NotFoundException) { Log.e("__MAP", "Can't find style. Error: ", e) }
     }
 
     //Map fragment
@@ -244,26 +221,19 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepository: Di
         when (isIntoPopUp) {
             false -> {
                 for (i in 0 until poisSize) {
-                    mLatLng = LatLng(
-                        retrieveDistrict?.pois?.get(i)?.latitude?.toDouble() ?: 0.0,
-                        retrieveDistrict?.pois?.get(i)?.longitude?.toDouble() ?: 0.0
-                    )
+                    mLatLng = LatLng(retrieveDistrict?.pois?.get(i)?.latitude?.toDouble() ?: 0.0, retrieveDistrict?.pois?.get(i)?.longitude?.toDouble() ?: 0.0)
 
                     val mMarker: Marker? = map?.addMarker(MarkerOptions().position(mLatLng))
 
                     fragmentMapBinding?.root?.context?.let {
-                        mMarker?.loadIcon(
-                            it,
-                            retrieveDistrict?.pois?.get(i)?.categoryMarker
-                        )
+                        mMarker?.loadIcon(it, retrieveDistrict?.pois?.get(i)?.categoryMarker)
                     }
                     map?.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, zoomLevel))
                 }
 
                 googleMap.setOnMarkerClickListener {
                     it.position.latitude
-                    val mPoi: Poi? =
-                        retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
+                    val mPoi: Poi? = retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
                     isIntoPopUp = false
                     popUpLocation = 1
                     //TODO : Cities Navigator
@@ -279,25 +249,28 @@ class PoisViewModel @Inject constructor(private val districtRemoteRepository: Di
                     fragmentMapBinding?.root?.context.let {
                         map?.addMarker(
                             MarkerOptions().position(
-                                LatLng(
-                                    selectedPoi?.latitude?.toDouble() ?: 0.0,
-                                    selectedPoi?.longitude?.toDouble() ?: 0.0
-                                )
-                            )
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                        )
+                                LatLng(selectedPoi?.latitude?.toDouble() ?: 0.0, selectedPoi?.longitude?.toDouble() ?: 0.0)
+                            ).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)))
                     }
 
                     map?.moveCamera(
                         CameraUpdateFactory.newLatLngZoom(
-                            LatLng(
-                                selectedPoi?.latitude?.toDouble() ?: 0.0,
-                                selectedPoi?.longitude?.toDouble() ?: 0.0
-                            ), zoomLevel
-                        )
+                            LatLng(selectedPoi?.latitude?.toDouble() ?: 0.0, selectedPoi?.longitude?.toDouble() ?: 0.0), zoomLevel)
                     )
                 }
             }
         }//When
     }
+
+    fun insertLocalPoi(context:Context, mPoi: Poi) {
+        //localRepository.initializeDB(context)
+
+
+        localDb.insertPoi(context, mPoi)
+    }
+
+    //fun deleteLocalPoi(context:Context, name: String) = localRepository.deletePoi(context, name)
+
+    //fun fetchLocalPois(context: Context) : List<Poi> = localRepository.fetchPois(context)
+
 }

@@ -6,7 +6,7 @@ data class Poi(
     var longitude: Float? = null,
     var categoryIcon: String? = null, //ICON Y MARKER
     var categoryMarker: String? = null, //ICON Y MARKER
-    var name: String? = null,
+    var name: String = "",
     var description: String? = null,
     var audio: String? = null,  //URL
     var city: String? = null,
