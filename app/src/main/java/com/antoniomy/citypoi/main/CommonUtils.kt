@@ -1,4 +1,5 @@
-package com.antoniomy.citypoi
+package com.antoniomy.citypoi.main
+
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -7,7 +8,9 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -16,13 +19,10 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
-import kotlinx.coroutines.launch
-
-
-import androidx.lifecycle.flowWithLifecycle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 
 fun replaceFragment(fragment: Fragment?, fragmentManager: FragmentManager) {

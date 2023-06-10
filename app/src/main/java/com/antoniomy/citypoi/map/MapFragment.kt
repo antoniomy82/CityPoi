@@ -12,30 +12,28 @@ import com.antoniomy.citypoi.viewmodel.PoisViewModel
 
 class MapFragment(val poisVM: PoisViewModel, private var cityName: String? = null) : Fragment() {
 
-    private var fragmentMapBinding: FragmentMapBinding? = null
+    private var fragmentMapsBinding: FragmentMapBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        fragmentMapBinding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_map,
-            container,
-            false
-        )
-        return fragmentMapBinding?.root
+        fragmentMapsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false)
+        return fragmentMapsBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //Set fragment parameters in vm
-        fragmentMapBinding?.let { poisVM.setMapsFragmentBinding(it, savedInstanceState) }
+        poisVM.apply {
+            fragmentMapsBinding?.let { fragmentMapBinding = it}
+            savedInstanceState?.let {  mapsBundle = it }
+            setMapsUI()
+            selectedCity = cityName.toString()
+        }
 
-        poisVM.setMapsUI()
-        poisVM.selectedCity = cityName.toString()
+
     }
 
 }

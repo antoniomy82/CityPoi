@@ -1,4 +1,4 @@
-package com.antoniomy.citypoi
+package com.antoniomy.citypoi.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -8,6 +8,7 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.antoniomy.citypoi.R
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {

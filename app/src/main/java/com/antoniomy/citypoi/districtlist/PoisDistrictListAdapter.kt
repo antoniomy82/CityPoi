@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.databinding.AdapterPoisDistrictListBinding
 import com.antoniomy.citypoi.detail.DetailFragment
-import com.antoniomy.citypoi.replaceFragment
+import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.District
 import com.bumptech.glide.Glide

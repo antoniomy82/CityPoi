@@ -1,4 +1,4 @@
-package com.antoniomy.citypoi
+package com.antoniomy.citypoi.main
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.databinding.AdapterHomeDistrictsBinding
 import com.antoniomy.citypoi.districtlist.PoisDistrictListFragment
-import com.antoniomy.citypoi.replaceFragment
+import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 
 class HomeDistrictAdapter(
