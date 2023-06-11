@@ -48,6 +48,10 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
     private var _fetchDistricts = MutableStateFlow(District())
     val fetchDistricts: StateFlow<District> get() = _fetchDistricts
 
+
+    private var _fetchPois = MutableStateFlow(mutableListOf <Poi>())
+    val fetchPois: StateFlow<List<Poi>> get() = _fetchPois
+
     private val _errorResponse = MutableStateFlow("Loading..")
     val errorResponse: StateFlow<String> get() = _errorResponse
 
@@ -83,6 +87,7 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
     var popUpLocation: Int = 0
 
     fun getDistrict(urlId: String) = viewModelScope.launch { remoteRepository.getDistrictList(urlId).collect { _fetchDistricts.value = it } }
+    fun getSavedPois() = viewModelScope.launch { fetchLocalPois() }
 
     fun setMapsUI() {
         fragmentMapBinding?.headerId?.headerTitle?.text = selectedCity //Top bar title

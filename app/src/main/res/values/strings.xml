@@ -13,6 +13,8 @@
     <string name="district_list">Lista Distritos</string>
     <string name="home_title">Ciudades y Distritos</string>
 
+    <string name="Poi_saved">POIs Guardados</string>
+
     <string name="accept">ACEPTAR</string>
     <string name="loading">Cargando…</string>
     <string name="test_header">PRUEBAS CABECERA</string>
@@ -20,4 +22,9 @@
     <string name="splash_text_sevilla">Sevilla</string>
     <string name="splash_text_madrid">Madrid</string>
     <string name="splash_text_barcelona">Barcelona</string>
+
+    <!--Carousel-->
+    <string name="carousel_next_button">Next</string>
+    <string name="carousel_skip_button">Skip</string>
+    <string name="carousel_page_description">Presentation carousel</string>
 </resources>

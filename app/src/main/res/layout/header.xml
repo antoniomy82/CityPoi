@@ -12,7 +12,7 @@
 
         <ImageView
             android:id="@+id/headerBack"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16sp"
             android:background="@drawable/back_ios_new_24"
@@ -23,8 +23,8 @@
 
         <TextView
             android:id="@+id/headerTitle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="250sp"
+            android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="@string/test_header"
@@ -35,6 +35,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/saved_pois"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16sp"
+            android:background="@drawable/baseline_save_24"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/headerTitle"
+            app:layout_constraintTop_toTopOf="parent"
+
+            tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

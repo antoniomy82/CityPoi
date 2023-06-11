@@ -37,6 +37,7 @@ class LocalRepositoryImpl @Inject constructor(private val poiDAO: PoiDAO): Local
     override fun fetchPoiList(): List<Poi> {
         val mList = mutableListOf<PoisDto>()
         CoroutineScope(Dispatchers.IO).launch {
+
             for (i in 0 until poiDAO.fetchPois().size) {
                 mList.add(i, poiDAO.fetchPois()[i])
             }

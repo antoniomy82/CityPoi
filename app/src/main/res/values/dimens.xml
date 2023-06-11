@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Tittles & Descriptions Custom Sizes (MMM)-->
+    <dimen name="tittle_textSize_20">20sp</dimen>
+    <dimen name="tittle_textSize_16">16sp</dimen>
+
+
+    <!-- Carousel sizes-->
+    <dimen name="carousel_scroll_full_size">2048sp</dimen>
+    <dimen name="carousel_layout_height">48sp</dimen>
+    <dimen name="carousel_padding_8">8dp</dimen>
+    <dimen name="carousel_margin_16">16dp</dimen>
+    <dimen name="carousel_margin_30">30dp</dimen>
+    <dimen name="carousel_margin_40">40dp</dimen>
+    <dimen name="carousel_margin_top_56">56dp</dimen>
+    <dimen name="carousel_margin_top_20">20dp</dimen>
+    <dimen name="carousel_margin_top_25">25dp</dimen>
+</resources>
