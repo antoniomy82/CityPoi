@@ -1,7 +1,7 @@
 package com.antoniomy.domain.datasource.local
 
-import com.antoniomy.data.model.PoisDto
 import com.antoniomy.domain.model.Poi
+import kotlinx.coroutines.flow.MutableStateFlow
 
 interface LocalRepository {
 
@@ -9,5 +9,5 @@ interface LocalRepository {
 
     fun deletePoi(name: String)
 
-    fun fetchPoiList(): List<Poi>
+    suspend fun fetchPoiList(): MutableStateFlow<List<Poi>>
 }

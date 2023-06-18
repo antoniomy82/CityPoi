@@ -25,6 +25,6 @@
 
     <!--Carousel-->
     <string name="carousel_next_button">Next</string>
-    <string name="carousel_skip_button">Skip</string>
+    <string name="carousel_back_button">Back</string>
     <string name="carousel_page_description">Presentation carousel</string>
 </resources>

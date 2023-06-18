@@ -2,6 +2,7 @@ package com.antoniomy.domain.di
 
 import android.content.Context
 import androidx.room.Room
+import com.antoniomy.data.repository.PoiDAO
 import com.antoniomy.data.repository.RemoteService
 import com.antoniomy.domain.datasource.local.LocalRepository
 import com.antoniomy.domain.datasource.local.LocalRepositoryImpl
@@ -20,6 +21,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DomainDI {
 
+    //Remote Repository
     @Provides
     @Singleton
     fun remoteService(retrofit: Retrofit): RemoteService = retrofit.create(RemoteService::class.java)
@@ -28,12 +30,15 @@ object DomainDI {
     @Singleton
     fun providesDistrictRemoteRepo(remoteService: RemoteService): RemoteRepository = RemoteRepositoryImpl(remoteService)
 
-    @Singleton
+
+    //Local DB Room
     @Provides
-    fun provideLocalDb(@ApplicationContext appContext: Context) =
-        Room.databaseBuilder(appContext, PoiDB::class.java, "PoiLocalDB").fallbackToDestructiveMigration().build()
+    fun providesPoiDao(poiDB: PoiDB): PoiDAO = poiDB.getPoiDAO()
 
     @Provides
     @Singleton
-    fun providePoiDao(db: PoiDB): LocalRepository = LocalRepositoryImpl(db.getPoiDAO())
+    fun providePoiDB(@ApplicationContext context: Context) : PoiDB = Room.databaseBuilder(context, PoiDB::class.java, "PoiLocal.db").fallbackToDestructiveMigration().build()
+
+    @Provides
+    fun providePoiRepository(poiDAO: PoiDAO) : LocalRepository = LocalRepositoryImpl(poiDAO)
 }

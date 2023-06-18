@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:layout_marginTop="@dimen/carousel_margin_16"
     android:filterTouchesWhenObscured="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,10 +18,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/district_title_layout" />
+            app:layout_constraintTop_toTopOf="@+id/carouselSettingsScrollView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:layout_marginTop="42dp"
         android:id="@+id/carouselSettingsScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,7 +30,8 @@
         android:background="@drawable/background_gradient"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
+>
 
         <LinearLayout
             android:id="@+id/buttons_constraint_layout"
@@ -75,29 +76,35 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/carousel_next_btn"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:focusable="true"
             android:importantForAccessibility="yes"
             android:padding="@dimen/carousel_padding_8"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center"
             android:text="@string/carousel_next_button"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:background="@color/red"
             android:textAlignment="center"
-            app:layout_constraintBottom_toTopOf="@+id/carousel_skip_btn" />
+            app:layout_constraintBottom_toTopOf="@+id/carousel_back_btn" />
 
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/carousel_skip_btn"
-            android:layout_width="match_parent"
+            android:id="@+id/carousel_back_btn"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/carousel_margin_16"
-            android:layout_height="@dimen/carousel_layout_height"
             android:padding="@dimen/carousel_padding_8"
             android:focusable="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center"
             android:importantForAccessibility="yes"
             android:textStyle="bold"
-            android:text="@string/carousel_skip_button"
+            android:text="@string/carousel_back_button"
             android:textColor="@color/red"
             android:background="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"

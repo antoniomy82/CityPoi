@@ -17,6 +17,7 @@ import com.antoniomy.citypoi.databinding.FragmentMapBinding
 import com.antoniomy.citypoi.databinding.PopUpPoisDetailBinding
 import com.antoniomy.citypoi.detail.DetailFragment
 import com.antoniomy.citypoi.districtlist.PoisDistrictListFragment
+import com.antoniomy.citypoi.home.HomeDistrictFragment
 import com.antoniomy.citypoi.main.getTimeResult
 import com.antoniomy.citypoi.main.loadIcon
 import com.antoniomy.citypoi.main.mediaProgress
@@ -48,8 +49,7 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
     private var _fetchDistricts = MutableStateFlow(District())
     val fetchDistricts: StateFlow<District> get() = _fetchDistricts
 
-
-    private var _fetchPois = MutableStateFlow(mutableListOf <Poi>())
+    private var _fetchPois = MutableStateFlow(listOf<Poi>())
     val fetchPois: StateFlow<List<Poi>> get() = _fetchPois
 
     private val _errorResponse = MutableStateFlow("Loading..")
@@ -62,7 +62,7 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
     //Main fragment values
     val districtTittle = MutableLiveData<String>()
     val poisCount = MutableLiveData<String>().also { it.value = "0" }
-    lateinit var fragmentPoisListBinding : FragmentDistrictListBinding
+    var fragmentPoisListBinding : FragmentDistrictListBinding? = null
 
     //Maps Fragment values
     var fragmentMapBinding: FragmentMapBinding? = null
@@ -87,7 +87,7 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
     var popUpLocation: Int = 0
 
     fun getDistrict(urlId: String) = viewModelScope.launch { remoteRepository.getDistrictList(urlId).collect { _fetchDistricts.value = it } }
-    fun getSavedPois() = viewModelScope.launch { fetchLocalPois() }
+    fun getSavedPois() = viewModelScope.launch { localRepository.fetchPoiList().collect{_fetchPois.value = it} }
 
     fun setMapsUI() {
         fragmentMapBinding?.headerId?.headerTitle?.text = selectedCity //Top bar title
@@ -136,7 +136,7 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
     }
 
     //TODO : Cities Navigator
-    fun goToList() = replaceFragment(position?.let { PoisDistrictListFragment(retrieveDistrict, selectedCity, it, this) }, (fragmentPoisListBinding.root.context as AppCompatActivity).supportFragmentManager)
+    fun goToList() = replaceFragment(position?.let { PoisDistrictListFragment(retrieveDistrict, selectedCity, it, this) }, (fragmentPoisListBinding?.root?.context as AppCompatActivity).supportFragmentManager)
 
     private fun goToDetail(mPoi: Poi?) = replaceFragment(mPoi?.let { it1 -> DetailFragment(it1, this) }, (fragmentMapBinding?.root?.context as AppCompatActivity).supportFragmentManager)
 
@@ -168,12 +168,13 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
 
     fun getVM(): PoisViewModel = this
 
-    fun goToMap() = citiesNavigation.goToMap(this, selectedCity, (fragmentPoisListBinding.root.context as AppCompatActivity).supportFragmentManager)
+    fun goToMap() = citiesNavigation.goToMap(this, selectedCity, (fragmentPoisListBinding?.root?.context as AppCompatActivity).supportFragmentManager)
 
     fun closePopUp() {
         when (popUpLocation) {
             0 -> goToList()
             1 -> goToMap()
+            2 -> replaceFragment(HomeDistrictFragment(this), (popUpBinding?.root?.context as AppCompatActivity).supportFragmentManager )
         }
         buttonStop()
     }
@@ -191,7 +192,7 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
 
     fun buttonStop() {
         mediaPlayer?.stop()
-        mediaPlayer = MediaPlayer.create(fragmentPoisListBinding.root.context, myUri)
+        mediaPlayer = MediaPlayer.create(fragmentPoisListBinding?.root?.context, myUri)
         launchTimer?.cancel()
 
         popUpBinding?.apply {
@@ -242,9 +243,14 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
         }//When
     }
 
-    fun insertLocalPoi(mPoi: Poi) = localRepository.insertPoi(mPoi)
+    fun insertLocalPoi(mPoi: Poi){
+        mPoi.apply {
+            city = selectedCity
+            district = districtTittle.value
+        }
+        localRepository.insertPoi(mPoi)
+    }
 
     fun deleteLocalPoi(name: String) = localRepository.deletePoi(name)
 
-    fun fetchLocalPois() : List<Poi> = localRepository.fetchPoiList()
 }

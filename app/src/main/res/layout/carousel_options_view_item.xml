@@ -12,11 +12,12 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_carousel_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="220dp"
         android:layout_gravity="center"
-        android:gravity="center_horizontal"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="30dp"
         android:importantForAccessibility="no"
-        android:scaleType="centerInside"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,13 +26,13 @@
         android:id="@+id/title_carousel_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/carousel_padding_8"
+        android:layout_marginTop="32dp"
         android:textStyle="bold"
         android:gravity="center_horizontal"
         android:textColor="@color/black"
         android:textSize="@dimen/tittle_textSize_20"
-        app:layout_constraintBottom_toTopOf="@+id/description_carousel_card"
-        app:layout_constraintTop_toBottomOf="@+id/image_carousel_card" />
+        app:layout_constraintBottom_toTopOf="@id/description_carousel_card"
+        app:layout_constraintTop_toBottomOf="@id/image_carousel_card" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/description_carousel_card"
@@ -41,7 +42,45 @@
         android:gravity="center_horizontal"
         android:textColor="@color/black"
         android:textSize="@dimen/tittle_textSize_16"
-        app:layout_constraintTop_toBottomOf="@+id/image_carousel_card" />
+        app:layout_constraintTop_toBottomOf="@id/image_carousel_card" />
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/category_icon_carousel"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf= "@id/description_carousel_card"/>
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/city_name_carousel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/carousel_padding_8"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:textSize="@dimen/tittle_textSize_16"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf= "@id/city_name"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/name_district_carousel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/carousel_padding_8"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:textSize="@dimen/tittle_textSize_16"
+        app:layout_constraintTop_toBottomOf= "@id/name_district"/>
+
+
 
 </LinearLayout>
 

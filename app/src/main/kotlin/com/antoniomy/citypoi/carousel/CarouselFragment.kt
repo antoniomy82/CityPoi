@@ -1,14 +1,12 @@
 package com.antoniomy.citypoi.carousel
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -19,9 +17,7 @@ import com.antoniomy.citypoi.home.HomeDistrictFragment
 import com.antoniomy.citypoi.main.collectInLifeCycle
 import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
-
-
-class CarouselFragment(private val poisViewModel: PoisViewModel) : Fragment() {
+class CarouselFragment(private val viewModel: PoisViewModel) : Fragment() {
 
     private lateinit var binding: FragmentCarouselBinding
     private lateinit var sliderDotsPanel: LinearLayout
@@ -42,28 +38,17 @@ class CarouselFragment(private val poisViewModel: PoisViewModel) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        poisViewModel.getSavedPois()
+        viewModel.getSavedPois()
         setToolbar()
         initObserver()
-
     }
 
     private fun initObserver() {
-        poisViewModel.fetchPois.collectInLifeCycle(viewLifecycleOwner) {
-            Log.d("Saved", it.toString())
+        viewModel.fetchPois.collectInLifeCycle(viewLifecycleOwner) {
 
             if (it.isNotEmpty()) {
 
-                CAROUSEL_MODEL = CarouselModel(
-                    carouselCards = it,
-                    actionPrimaryButton = {
-                        Toast.makeText(context, "Hola", Toast.LENGTH_LONG).show()
-                    },
-                    actionSecondaryButton = {
-                        replaceFragment(
-                            HomeDistrictFragment(poisViewModel),
-                            (context as AppCompatActivity).supportFragmentManager
-                        )})
+                CAROUSEL_MODEL = CarouselModel(carouselCards = it)
 
                 SELECTED_SLIDE = 0
                 setCarouselView()
@@ -82,13 +67,8 @@ class CarouselFragment(private val poisViewModel: PoisViewModel) : Fragment() {
         view?.findViewById<View>(R.id.saved_pois)?.visibility = View.GONE
 
         view?.findViewById<View>(R.id.headerBack)?.apply {
-            setBackgroundResource(R.drawable.baseline_close_24)
-
             setOnClickListener {
-                replaceFragment(
-                    HomeDistrictFragment(poisViewModel),
-                    (context as AppCompatActivity).supportFragmentManager
-                )
+                replaceFragment(HomeDistrictFragment(viewModel), (context as AppCompatActivity).supportFragmentManager)
             }
         }
     }
@@ -96,19 +76,13 @@ class CarouselFragment(private val poisViewModel: PoisViewModel) : Fragment() {
     private fun setCarouselView() {
         viewPager = view?.findViewById<View>(R.id.carouselCardsViewPager) as ViewPager
         sliderDotsPanel = view?.findViewById<View>(R.id.slider_dots) as LinearLayout
-        val viewPagerAdapter = CarouselAdapter(CAROUSEL_MODEL.carouselCards, requireContext())
+        val viewPagerAdapter = CarouselAdapter(CAROUSEL_MODEL.carouselCards, requireContext(), viewModel)
         viewPager.adapter = viewPagerAdapter
         viewPager.setPageTransformer(true, CarouselZoomOut())
         dotsCount = viewPagerAdapter.count
 
         CAROUSEL_MODEL.apply {
-            if (actionPrimaryButton == null) binding.carouselNextBtn.visibility =
-                View.GONE   //hide button
-            if (actionSecondaryButton == null) binding.carouselSkipBtn.visibility = View.GONE
-            if (primaryButtonText != null) binding.carouselNextBtn.text =
-                getString(primaryButtonText)  //Set customise text
-            if (secondaryButtonText != null) binding.carouselSkipBtn.text =
-                getString(secondaryButtonText)
+            if (primaryButtonText != null) binding.carouselNextBtn.text = getString(primaryButtonText)  //Set customise text
         }
 
     }
@@ -118,26 +92,13 @@ class CarouselFragment(private val poisViewModel: PoisViewModel) : Fragment() {
 
         for (i in 0 until dotsCount) {
             dots[i] = ImageView(requireContext())
-            dots[i]?.setImageDrawable(
-                ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.carousel_non_active_dot
-                )
-            )
-            val params = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
+            dots[i]?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.carousel_non_active_dot))
+            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             params.setMargins(8, 0, 8, 0)
             sliderDotsPanel.addView(dots[i], params)
         }
 
-        dots[0]?.setImageDrawable(
-            ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.carousel_active_dot
-            )
-        )
+        dots[0]?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.carousel_active_dot))
     }
 
     private fun setButtonsListener() {
@@ -148,46 +109,31 @@ class CarouselFragment(private val poisViewModel: PoisViewModel) : Fragment() {
                     viewPager.currentItem + 1 != viewPager.adapter?.count -> viewPager.currentItem++ // Go to next slide
                 }
             }
-            carouselSkipBtn.setOnClickListener {
-                CAROUSEL_MODEL.actionSecondaryButton?.let { it() }
+
+            carouselBackBtn.setOnClickListener {
+                when {
+                    viewPager.currentItem - 1 == viewPager.adapter?.count -> CAROUSEL_MODEL.actionSecondaryButton?.let { it() }
+                    viewPager.currentItem - 1 != viewPager.adapter?.count -> viewPager.currentItem-- // Go to back slide
+                }
             }
         }
     }
 
     private fun setDotsListener() {
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-            }
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
                 for (i in 0 until dotsCount) {
-                    dots[i]?.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.carousel_non_active_dot
-                        )
-                    )
+                    dots[i]?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.carousel_non_active_dot))
                 }
-                dots[position]?.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.carousel_active_dot
-                    )
-                )
+                dots[position]?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.carousel_active_dot))
                 SELECTED_SLIDE = if (position < dotsCount) position else position - 1
 
             }
 
             override fun onPageScrollStateChanged(state: Int) { //Scroll to top when start
-                binding.carouselSettingsScrollView.post {
-                    binding.carouselSettingsScrollView.fullScroll(
-                        binding.carouselSettingsScrollView.top
-                    )
-                }
+                binding.carouselSettingsScrollView.post { binding.carouselSettingsScrollView.fullScroll(binding.carouselSettingsScrollView.top) }
             }
         })
     }

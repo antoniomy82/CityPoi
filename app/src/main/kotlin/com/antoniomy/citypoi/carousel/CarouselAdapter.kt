@@ -6,13 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.antoniomy.citypoi.R
+import com.antoniomy.citypoi.detail.DetailFragment
+import com.antoniomy.citypoi.main.replaceFragment
+import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.Poi
 import com.bumptech.glide.Glide
 
-class CarouselAdapter(private val itemList: List<Poi>, private val context: Context) : PagerAdapter() {
+class CarouselAdapter(
+    private val itemList: List<Poi>,
+    private val context: Context,
+    private val viewModel: PoisViewModel
+) : PagerAdapter() {
 
     override fun getCount() = itemList.size
 
@@ -24,6 +32,9 @@ class CarouselAdapter(private val itemList: List<Poi>, private val context: Cont
         val imageCarousel = (view.findViewById<View>(R.id.image_carousel_card) as ImageView)
         val title = view.findViewById<TextView>(R.id.title_carousel_card)
         val description =  view.findViewById<TextView>(R.id.description_carousel_card)
+        val city = view.findViewById<TextView>(R.id.city_name_carousel)
+        val district = view.findViewById<TextView>(R.id.name_district_carousel)
+        val categoryIcn = view.findViewById<View>(R.id.category_icon_carousel) as ImageView
 
 
         if(itemList[position].image !=null) itemList[position].image.let{ Glide.with(context).load(it).into(imageCarousel)}
@@ -31,15 +42,24 @@ class CarouselAdapter(private val itemList: List<Poi>, private val context: Cont
 
         title.text = itemList[position].name
         title.contentDescription = itemList[position].name
+        city.text = itemList[position].city
+        district.text = itemList[position].district
+        itemList[position].categoryIcon.let { Glide.with(context).load(it).into(categoryIcn) }
 
         if(itemList[position].description ==null) description.visibility = View.GONE
         else {
             description.text = itemList[position].description
             description.contentDescription = itemList[position].description }
 
+        view.setOnClickListener {
+            viewModel.popUpLocation = 2
+            replaceFragment(DetailFragment(itemList[position], viewModel), (context as AppCompatActivity).supportFragmentManager)
+        }
+
         (container as ViewPager).addView(view, 0)
         return view
     }
+
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         val vp = container as ViewPager

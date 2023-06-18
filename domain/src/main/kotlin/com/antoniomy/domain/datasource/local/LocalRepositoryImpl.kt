@@ -8,16 +8,18 @@ import com.antoniomy.domain.model.toData
 import com.antoniomy.domain.model.toDomain
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class LocalRepositoryImpl @Inject constructor(private val poiDAO: PoiDAO): LocalRepository {
+class LocalRepositoryImpl @Inject constructor(private val poiDAO: PoiDAO) : LocalRepository {
 
     override fun insertPoi(poi: Poi) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 poiDAO.insertPoi(poi.toData())
-                Log.d("INSERTED-->", poi.name)
+                Log.d("INSERTED-->", poi.toData().toString())
             } catch (e: Exception) {
                 Log.e("__insertError", e.toString())
             }
@@ -34,14 +36,19 @@ class LocalRepositoryImpl @Inject constructor(private val poiDAO: PoiDAO): Local
         }
     }
 
-    override fun fetchPoiList(): List<Poi> {
-        val mList = mutableListOf<PoisDto>()
-        CoroutineScope(Dispatchers.IO).launch {
+    override suspend fun fetchPoiList(): MutableStateFlow<List<Poi>> =
+
+        withContext(Dispatchers.IO) {
+            val mList = mutableListOf<PoisDto>()
+            val fetchPois = MutableStateFlow(listOf<Poi>())
 
             for (i in 0 until poiDAO.fetchPois().size) {
                 mList.add(i, poiDAO.fetchPois()[i])
+                Log.d("List POI", mList.toString())
             }
+            fetchPois.value = mList.toDomain()
+            return@withContext fetchPois
         }
-        return mList.toDomain()
-    }
+
+
 }
