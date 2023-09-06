@@ -47,9 +47,7 @@ class CarouselFragment(private val viewModel: PoisViewModel) : Fragment() {
         viewModel.fetchPois.collectInLifeCycle(viewLifecycleOwner) {
 
             if (it.isNotEmpty()) {
-
                 CAROUSEL_MODEL = CarouselModel(carouselCards = it)
-
                 SELECTED_SLIDE = 0
                 setCarouselView()
                 setDotsView()

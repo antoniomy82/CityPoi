@@ -11,7 +11,6 @@ import com.antoniomy.citypoi.databinding.PopUpPoisDetailBinding
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.Poi
 
-
 class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel) : Fragment() {
 
     private var popUpPoisDetailBinding: PopUpPoisDetailBinding?=null
