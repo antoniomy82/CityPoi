@@ -55,7 +55,8 @@ class PoisDistrictListFragment(
             replaceFragment(HomeDistrictFragment(poisViewModel), parentFragmentManager)
         }
 
-        poisViewModel.getDistrict("$urlID")
+        context?.let { poisViewModel.getDistrictMocked(it) }
+        //poisViewModel.getDistrict("$urlID")
     }
 
     private fun initObservers() {

@@ -1,0 +1,77 @@
+{
+  "name": "JSON MOCK MODE",
+  "pois": [
+    {
+      "imageLocal": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/03/5a4d93285cfb650e33f5f1e93676686171b50b34.jpeg",
+      "latitude": "40.42366",
+      "longitude": "-3.706541",
+      "categoryIcon": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/5f2d8a98f23c402a42bd0afeac6453892ba05061.png",
+      "categoryMarker": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/15dd66dddd288ed19b9eaa7205f2dda72d94687f.png",
+      "name": "Club Masala",
+      "description": "Antes se encontraba en el Barrio de Lavapies, ahora Calle Andrés Borrego, 10",
+      "audioLocal": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/01/41832c8d2c04d0cf9faa5e43f2d4cf5a8a138ba4.aac",
+      "city": "Madrid",
+      "district": "MALASAÑA"
+    },
+    {
+      "imageLocal": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/04/5603e947b254c6e80e5322dad7266016bcf93e08.jpeg",
+      "latitude": "40.42698",
+      "longitude": "-3.704064",
+      "categoryIcon": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/61b2545d129f1ae3d28420950651ab54dbdc0df5.png",
+      "categoryMarker": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/9d4bf14631e3b5bc8114514d15e6d279567186fa.png",
+      "name": "Plaza Dos de Mayo",
+      "description": "Plaza Dos de Mayo",
+      "audioLocal": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/01/e28ff4adeaa5a22b5ad9eee4d755a5d6a17b27d4.aac",
+      "city": "Madrid",
+      "district": "MALASAÑA"
+    },
+    {
+      "imageLocal": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/05/41f792ce11b9941b21672b1ce76f04c3e91479a7.jpeg",
+      "latitude": "40.424484",
+      "longitude": "-3.696617",
+      "categoryIcon": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/faa6de5f182feb7b6c1b0f3e4984c92fa1de8267.png",
+      "categoryMarker": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/99b1efe8a48cc42c55fb97b332c909f41f8bab11.png",
+      "name": "Búho Real",
+      "description": "Calle de Regueros, 5",
+      "audioLocal": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/b5457d9ece82d129eb2bd2b90ff76cb073d82750.aac",
+      "city": "Madrid",
+      "district": "CHUECA"
+    },
+    {
+      "imageLocal": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/06/ad6aa5a1c3ed5e60ed3699c159298eb8c40e93bd.jpeg",
+      "latitude": "37.383194",
+      "longitude": "-5.99553",
+      "categoryIcon": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/61b2545d129f1ae3d28420950651ab54dbdc0df5.png",
+      "categoryMarker": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/9d4bf14631e3b5bc8114514d15e6d279567186fa.png",
+      "name": "La Torre de la Plata",
+      "description": "Calle Santander",
+      "audioLocal": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/06/b8e3515cb116fdca6ae0dfc40286105269246561.mp4a",
+      "city": "Sevilla",
+      "district": "ARENAL - MUSEO"
+    },
+    {
+      "imageLocal": "http://www.jdiezarnal.com/catedraldemalagavista01.jpg",
+      "latitude": "36.720169",
+      "longitude": "-4.419339",
+      "categoryIcon": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/61b2545d129f1ae3d28420950651ab54dbdc0df5.png",
+      "categoryMarker": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/9d4bf14631e3b5bc8114514d15e6d279567186fa.png",
+      "name": "Catedral de Málaga",
+      "description": "C. Molina Lario, 9, 29015 Málaga",
+      "audioLocal": "https://www.hayquever.com/documentos/fichas/audio/0061_-_Malaga_-_Catedral-ES.mp3",
+      "city": "Málaga",
+      "district": "Centro"
+    },
+    {
+      "imageLocal": "https://azimutweb.es/desnarigado/assets/img/intro/n1.png",
+      "latitude": "35.89468",
+      "longitude": "-5.28108",
+      "categoryIcon": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/61b2545d129f1ae3d28420950651ab54dbdc0df5.png",
+      "categoryMarker": "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/9d4bf14631e3b5bc8114514d15e6d279567186fa.png",
+      "name": "Castillo Desnarigado",
+      "description": "El Fuerte del Desnarigado es un fuerte, reconvertido en museo, situado en el borde litoral del frente sur del monte Hacho, en Ceuta. Posee una superficie de 1280 metros cuadrados.",
+      "audioLocal": "https://azimutweb.es/desnarigado/assets/img/intro/Pequeño-castillo-dedicado-a-la1610167206.mp3",
+      "city": "Ceuta",
+      "district": "Monte Hacho"
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 package com.antoniomy.domain.datasource.remote
 
+import android.content.Context
 import android.util.Log
+import com.antoniomy.data.repository.RemoteJson
 import com.antoniomy.data.repository.RemoteService
 import com.antoniomy.data.repository.urlCities
 import com.antoniomy.domain.model.District
@@ -12,10 +14,11 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 
-class RemoteRepositoryImpl @Inject constructor(private val remoteService: RemoteService) :
+class RemoteRepositoryImpl @Inject constructor(
+    private val remoteService: RemoteService,
+    private val remoteJson: RemoteJson
+) :
     RemoteRepository {
-
-
     override suspend fun getDistrictList(urlId: String): MutableStateFlow<District> =
         withContext(Dispatchers.IO) {
             val retrieveDistrict = MutableStateFlow(District())
@@ -39,5 +42,7 @@ class RemoteRepositoryImpl @Inject constructor(private val remoteService: Remote
             return@withContext retrieveDistrict
         }
 
+    override suspend fun getMockedList(context: Context): MutableStateFlow<District> =
+        MutableStateFlow(remoteJson.getPoiJsonList(context).value.toDomain())
 
 }

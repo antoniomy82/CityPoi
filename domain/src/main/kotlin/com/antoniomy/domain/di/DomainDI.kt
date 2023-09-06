@@ -3,6 +3,8 @@ package com.antoniomy.domain.di
 import android.content.Context
 import androidx.room.Room
 import com.antoniomy.data.repository.PoiDAO
+import com.antoniomy.data.repository.RemoteJson
+import com.antoniomy.data.repository.RemoteJsonImpl
 import com.antoniomy.data.repository.RemoteService
 import com.antoniomy.domain.datasource.local.LocalRepository
 import com.antoniomy.domain.datasource.local.LocalRepositoryImpl
@@ -26,9 +28,16 @@ object DomainDI {
     @Singleton
     fun remoteService(retrofit: Retrofit): RemoteService = retrofit.create(RemoteService::class.java)
 
+    //Remote Mock Json
     @Provides
     @Singleton
-    fun providesDistrictRemoteRepo(remoteService: RemoteService): RemoteRepository = RemoteRepositoryImpl(remoteService)
+    fun remoteJson() : RemoteJson = RemoteJsonImpl()
+
+    @Provides
+    @Singleton
+    fun providesDistrictRemoteRepo(remoteService: RemoteService): RemoteRepository = RemoteRepositoryImpl(remoteService ,
+        remoteJson()
+    )
 
 
     //Local DB Room

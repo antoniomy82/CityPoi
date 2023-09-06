@@ -1,5 +1,6 @@
 package com.antoniomy.citypoi.viewmodel
 
+import android.content.Context
 import android.content.res.Resources
 import android.media.MediaPlayer
 import android.net.Uri
@@ -43,6 +44,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
+
 @HiltViewModel
 class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepository, private val localRepository: LocalRepository) : ViewModel(), OnMapReadyCallback {
 
@@ -51,7 +53,7 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
 
     private var _fetchPois = MutableStateFlow(listOf<Poi>())
     val fetchPois: StateFlow<List<Poi>> get() = _fetchPois
-
+    
     private val _errorResponse = MutableStateFlow("Loading..")
     val errorResponse: StateFlow<String> get() = _errorResponse
 
@@ -87,6 +89,9 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
     var popUpLocation: Int = 0
 
     fun getDistrict(urlId: String) = viewModelScope.launch { remoteRepository.getDistrictList(urlId).collect { _fetchDistricts.value = it } }
+
+    fun getDistrictMocked(context: Context) = viewModelScope.launch { remoteRepository.getMockedList(context).collect { _fetchDistricts.value = it } }
+
     fun getSavedPois() = viewModelScope.launch { localRepository.fetchPoiList().collect{_fetchPois.value = it} }
 
     fun setMapsUI() {
