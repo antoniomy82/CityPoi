@@ -1,4 +1,4 @@
-package com.antoniomy.citypoi.home
+package com.antoniomy.citypoi.districts
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +17,7 @@ import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import kotlin.system.exitProcess
 
-class HomeDistrictFragment(private val poisViewModel: PoisViewModel) : Fragment() {
+class DistrictsFragment(private val poisViewModel: PoisViewModel) : Fragment() {
 
     private var fragmentHomeDistrictBinding: FragmentHomeDistrictBinding? = null
 
@@ -25,22 +25,22 @@ class HomeDistrictFragment(private val poisViewModel: PoisViewModel) : Fragment(
     private val sevName = "Sevilla"
     private val bcnName = "Barcelona"
 
-    private val homeCities: List<CitiesListModel> = listOf(
-        CitiesListModel(madName, "Lavapíes", R.mipmap.ic_madrid_round, 1),
-        CitiesListModel(madName, "Centro", R.mipmap.ic_madrid_round, 2),
-        CitiesListModel(madName, "Malasaña", R.mipmap.ic_madrid_round, 3),
-        CitiesListModel(madName, "Chueca", R.mipmap.ic_madrid_round, 5),
-        CitiesListModel(madName, "Huertas", R.mipmap.ic_madrid_round, 6),
-        CitiesListModel(sevName, "Alfalfa, Casco Antiguo", R.mipmap.ic_sevilla_round, 7),
-        CitiesListModel(sevName, "Arenal, Museo", R.mipmap.ic_sevilla_round, 8),
-        CitiesListModel(sevName, "Macarena, S.Luis, S.Vicente", R.mipmap.ic_sevilla_round, 9),
-        CitiesListModel(sevName, "Santa Cruz, Juderia", R.mipmap.ic_sevilla_round, 10),
-        CitiesListModel(sevName, "Triana, Los Remedios", R.mipmap.ic_sevilla_round, 11),
-        CitiesListModel(bcnName, "Barceloneta, Poble Nou", R.mipmap.ic_barcelona_round, 12),
-        CitiesListModel(bcnName, "El born, Ribera", R.mipmap.ic_barcelona_round, 13),
-        CitiesListModel(bcnName, "Gótico", R.mipmap.ic_barcelona_round, 14),
-        CitiesListModel(bcnName, "Raval Poble Sec", R.mipmap.ic_barcelona_round, 15),
-        CitiesListModel(bcnName, "Eixample, Gracia", R.mipmap.ic_barcelona_round, 16)
+    private val homeCities: List<DistrictsListModel> = listOf(
+        DistrictsListModel(madName, "Lavapíes", R.mipmap.ic_madrid_round, 1),
+        DistrictsListModel(madName, "Centro", R.mipmap.ic_madrid_round, 2),
+        DistrictsListModel(madName, "Malasaña", R.mipmap.ic_madrid_round, 3),
+        DistrictsListModel(madName, "Chueca", R.mipmap.ic_madrid_round, 5),
+        DistrictsListModel(madName, "Huertas", R.mipmap.ic_madrid_round, 6),
+        DistrictsListModel(sevName, "Alfalfa, Casco Antiguo", R.mipmap.ic_sevilla_round, 7),
+        DistrictsListModel(sevName, "Arenal, Museo", R.mipmap.ic_sevilla_round, 8),
+        DistrictsListModel(sevName, "Macarena, S.Luis, S.Vicente", R.mipmap.ic_sevilla_round, 9),
+        DistrictsListModel(sevName, "Santa Cruz, Juderia", R.mipmap.ic_sevilla_round, 10),
+        DistrictsListModel(sevName, "Triana, Los Remedios", R.mipmap.ic_sevilla_round, 11),
+        DistrictsListModel(bcnName, "Barceloneta, Poble Nou", R.mipmap.ic_barcelona_round, 12),
+        DistrictsListModel(bcnName, "El born, Ribera", R.mipmap.ic_barcelona_round, 13),
+        DistrictsListModel(bcnName, "Gótico", R.mipmap.ic_barcelona_round, 14),
+        DistrictsListModel(bcnName, "Raval Poble Sec", R.mipmap.ic_barcelona_round, 15),
+        DistrictsListModel(bcnName, "Eixample, Gracia", R.mipmap.ic_barcelona_round, 16)
     )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -64,7 +64,7 @@ class HomeDistrictFragment(private val poisViewModel: PoisViewModel) : Fragment(
 
         view?.findViewById<View>(R.id.saved_pois)?.apply {
             visibility = View.VISIBLE
-            setOnClickListener {replaceFragment(CarouselFragment(poisViewModel), (context as AppCompatActivity).supportFragmentManager)}
+            setOnClickListener {replaceFragment(CarouselFragment(poisViewModel), (context as AppCompatActivity).supportFragmentManager, POI_ID)}
         }
         view?.findViewById<View>(R.id.headerBack)?.apply {
             setBackgroundResource(R.drawable.baseline_close_24)
@@ -80,6 +80,10 @@ class HomeDistrictFragment(private val poisViewModel: PoisViewModel) : Fragment(
     private fun setHomeRecyclerViewAdapter() {
         val recyclerView: RecyclerView = view?.findViewById(R.id.rvHome) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = context?.let { HomeDistrictAdapter( homeCities, it,  poisViewModel) }
+        recyclerView.adapter = context?.let { DistricsAdapter( homeCities, it,  poisViewModel) }
+    }
+
+    companion object {
+        const val POI_ID = "DistrictsFragment"
     }
 }

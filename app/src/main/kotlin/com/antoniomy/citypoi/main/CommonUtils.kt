@@ -7,6 +7,7 @@ import android.os.CountDownTimer
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.commit
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -25,15 +26,11 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 
-fun replaceFragment(fragment: Fragment?, fragmentManager: FragmentManager) {
-    try {
-        val transaction = fragmentManager.beginTransaction()
-        fragment?.let { transaction.replace(R.id.frame_container, it) }
-        transaction.commit()
-    } catch (e: Exception) {
-        Log.e("__replaceFragment", e.toString())
-    }
+fun replaceFragment(fragment: Fragment, fragmentManager: FragmentManager, tag: String) {
+    try { fragmentManager.commit { replace(R.id.frame_container, fragment, tag) } }
+    catch (e: Exception) { Log.e("__replaceFragment", e.toString()) }
 }
+
 
 fun getTimeResult(millisUntilFinished: Long) =
     "${(millisUntilFinished / 1000 / 60).toString().padStart(2, '0')}:" +
@@ -92,6 +89,13 @@ fun Marker.loadIcon(context: Context, url: String?) {
 }
 
 /** A sample use: viewModel.event.onEach(::renderEvent).launchInLifeCycle(viewLifecycleOwner) */
-inline fun <reified T> Flow<T>.collectInLifeCycle(lifecycleOwner: LifecycleOwner, noinline collector: suspend (T) -> Unit) {
-    lifecycleOwner.lifecycleScope.launch { flowWithLifecycle(lifecycleOwner.lifecycle).onEach(collector).collect() }
+inline fun <reified T> Flow<T>.collectInLifeCycle(
+    lifecycleOwner: LifecycleOwner,
+    noinline collector: suspend (T) -> Unit
+) {
+    lifecycleOwner.lifecycleScope.launch {
+        flowWithLifecycle(lifecycleOwner.lifecycle).onEach(
+            collector
+        ).collect()
+    }
 }

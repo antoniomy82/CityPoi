@@ -1,4 +1,4 @@
-package com.antoniomy.citypoi.districtlist
+package com.antoniomy.citypoi.pois
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,22 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
+import com.antoniomy.citypoi.carousel.CarouselFragment
 import com.antoniomy.citypoi.databinding.FragmentDistrictListBinding
-import com.antoniomy.citypoi.home.HomeDistrictFragment
 import com.antoniomy.citypoi.main.collectInLifeCycle
 import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.District
+import kotlin.system.exitProcess
 
-class PoisDistrictListFragment(
+class PoisListFragment(
     private val mDistrict: District? = null,
     private var cityName: String? = null,
-    private val urlID: Int,
+    private val urlID: Int = 0,
     private val poisViewModel: PoisViewModel
 ) : Fragment() {
 
@@ -41,18 +43,36 @@ class PoisDistrictListFragment(
         initObservers()
         setUI()
         poisViewModel.fragmentPoisListBinding = fragmentDistrictListBinding
+       // context?.let { poisViewModel.getDistrictMocked(it) }
     }
 
 
     private fun setUI() {
         //Top bar title
         val headerTitle = view?.findViewById<View>(R.id.headerTitle) as TextView
-        headerTitle.text = cityName
-        poisViewModel.selectedCity = cityName.toString()
+        headerTitle.text = getString(R.string.pois_default_tittle)
+
+        poisViewModel.selectedCity =
+            if (cityName == "") getString(R.string.pois_default_tittle) else cityName.toString()
 
         //Back arrow
-        view?.findViewById<View>(R.id.headerBack)?.setOnClickListener {
-            replaceFragment(HomeDistrictFragment(poisViewModel), parentFragmentManager)
+        view?.findViewById<View>(R.id.headerBack)?.apply {
+            //replaceFragment(DistrictsFragment(poisViewModel), parentFragmentManager)
+            setBackgroundResource(R.drawable.baseline_close_24)
+
+            setOnClickListener {
+                activity?.finish()
+                exitProcess(0)
+            }
+        }
+
+        view?.findViewById<View>(R.id.saved_pois)?.apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                replaceFragment(
+                    CarouselFragment(poisViewModel),
+                    (context as AppCompatActivity).supportFragmentManager, CarouselFragment.POI_ID)
+            }
         }
 
         context?.let { poisViewModel.getDistrictMocked(it) }
@@ -93,6 +113,7 @@ class PoisDistrictListFragment(
 
         poisViewModel.errorResponse.collectInLifeCycle(viewLifecycleOwner) { errorMessage ->
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+            //context?.let { poisViewModel.getDistrictMocked(it) }
         }
     }
 
@@ -101,7 +122,7 @@ class PoisDistrictListFragment(
         val recyclerView: RecyclerView = view?.findViewById(R.id.rvPois) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = context?.let {
-            PoisDistrictListAdapter(
+            PoisListAdapter(
                 poisViewModel,
                 mDistrict,
                 parentFragmentManager
@@ -115,6 +136,7 @@ class PoisDistrictListFragment(
         count: String = "",
         isEmpty: Boolean = false
     ) {
+
         when (isEmpty) {
             true -> showLoading()
             false -> hideLoading(tittle, count)
@@ -144,5 +166,8 @@ class PoisDistrictListFragment(
             mapLayout.visibility = View.VISIBLE
             rvPois.visibility = View.VISIBLE
         }
+    }
+    companion object {
+        const val POI_ID = "PoisListFragment"
     }
 }

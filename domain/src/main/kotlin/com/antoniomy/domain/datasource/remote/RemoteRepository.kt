@@ -5,6 +5,6 @@ import com.antoniomy.domain.model.District
 import kotlinx.coroutines.flow.MutableStateFlow
 
 interface RemoteRepository {
-    suspend fun getDistrictList(urlId: String) : MutableStateFlow<District>
-    suspend fun getMockedList(context: Context): MutableStateFlow<District>
+    fun getDistrictList(urlId: String) : MutableStateFlow<District>
+    fun getMockedList(context: Context): MutableStateFlow<District>
 }

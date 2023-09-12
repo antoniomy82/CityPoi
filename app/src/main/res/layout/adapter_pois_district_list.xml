@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="poisVm"
-            type="com.antoniomy.citypoi.viewmodel.PoisViewModel" />
+            name="poi"
+            type="com.antoniomy.domain.model.Poi" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,6 +21,7 @@
             android:id="@+id/image_poi"
             android:layout_width="70sp"
             android:layout_height="70sp"
+            android:layout_marginStart="8sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -29,24 +30,40 @@
 
         <TextView
             android:id="@+id/name_poi"
-            android:layout_width="250sp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4sp"
-            android:layout_marginEnd="4sp"
-            android:layout_weight="0.5"
+            android:layout_marginStart="32sp"
             android:maxLines="2"
+            android:text="@{poi.name}"
             android:textColor="@color/normal_text_color"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageView2"
+            app:layout_constraintEnd_toStartOf="@+id/image_category"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/image_poi"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.145" />
+
+        <TextView
+            android:id="@+id/city_poi"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32sp"
+            android:maxLines="2"
+            android:text="@{poi.city}"
+            android:textColor="@color/normal_text_color"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/image_category"
+            app:layout_constraintStart_toEndOf="@+id/image_poi"
+            app:layout_constraintTop_toBottomOf="@+id/name_poi" />
 
         <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="18sp"
-            android:layout_height="18sp"
+            android:id="@+id/image_category"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
             android:layout_gravity="center"
             android:src="@drawable/heart_icon"
             app:layout_constraintBottom_toBottomOf="parent"

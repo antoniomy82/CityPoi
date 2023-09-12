@@ -17,13 +17,12 @@ import com.antoniomy.citypoi.databinding.FragmentDistrictListBinding
 import com.antoniomy.citypoi.databinding.FragmentMapBinding
 import com.antoniomy.citypoi.databinding.PopUpPoisDetailBinding
 import com.antoniomy.citypoi.detail.DetailFragment
-import com.antoniomy.citypoi.districtlist.PoisDistrictListFragment
-import com.antoniomy.citypoi.home.HomeDistrictFragment
 import com.antoniomy.citypoi.main.getTimeResult
 import com.antoniomy.citypoi.main.loadIcon
 import com.antoniomy.citypoi.main.mediaProgress
 import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
+import com.antoniomy.citypoi.pois.PoisListFragment
 import com.antoniomy.domain.datasource.local.LocalRepository
 import com.antoniomy.domain.datasource.remote.RemoteRepository
 import com.antoniomy.domain.model.District
@@ -48,12 +47,9 @@ import kotlin.properties.Delegates
 @HiltViewModel
 class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepository, private val localRepository: LocalRepository) : ViewModel(), OnMapReadyCallback {
 
-    private var _fetchDistricts = MutableStateFlow(District())
-    val fetchDistricts: StateFlow<District> get() = _fetchDistricts
+    var fetchDistricts = MutableStateFlow(District())
+    var fetchPois = MutableStateFlow(listOf<Poi>())
 
-    private var _fetchPois = MutableStateFlow(listOf<Poi>())
-    val fetchPois: StateFlow<List<Poi>> get() = _fetchPois
-    
     private val _errorResponse = MutableStateFlow("Loading..")
     val errorResponse: StateFlow<String> get() = _errorResponse
 
@@ -88,29 +84,21 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
     private var launchTimer: CountDownTimer? = null
     var popUpLocation: Int = 0
 
-    fun getDistrict(urlId: String) = viewModelScope.launch { remoteRepository.getDistrictList(urlId).collect { _fetchDistricts.value = it } }
+    fun getDistrict(urlId: String) = viewModelScope.launch { remoteRepository.getDistrictList(urlId).collect { fetchDistricts.value = it } }
+    fun getDistrictMocked(context: Context) = viewModelScope.launch { remoteRepository.getMockedList(context).collect { fetchDistricts.value = it } }
+    fun getSavedPois() = viewModelScope.launch { localRepository.fetchPoiList().collect{fetchPois.value = it} }
 
-    fun getDistrictMocked(context: Context) = viewModelScope.launch { remoteRepository.getMockedList(context).collect { _fetchDistricts.value = it } }
+    //TODO : Cities Navigator
+    fun goToList() = position?.let { PoisListFragment(retrieveDistrict, selectedCity, it, this) }
+        ?.let { replaceFragment(it, (fragmentPoisListBinding?.root?.context as AppCompatActivity).supportFragmentManager, PoisListFragment.POI_ID) }
 
-    fun getSavedPois() = viewModelScope.launch { localRepository.fetchPoiList().collect{_fetchPois.value = it} }
+    private fun goToDetail(mPoi: Poi?) = mPoi?.let { it1 -> DetailFragment(it1, this) }
+        ?.let { replaceFragment(it, (fragmentMapBinding?.root?.context as AppCompatActivity).supportFragmentManager, DetailFragment.POI_ID) }
 
-    fun setMapsUI() {
-        fragmentMapBinding?.headerId?.headerTitle?.text = selectedCity //Top bar title
+    fun getVM(): PoisViewModel = this
 
-        fragmentMapBinding?.headerId?.headerBack?.setOnClickListener {//Back arrow
-            citiesNavigation.goToHome(this, (fragmentMapBinding?.root?.context as AppCompatActivity).supportFragmentManager)
-        }
+    fun goToMap() = citiesNavigation.goToMap(this, selectedCity, (fragmentPoisListBinding?.root?.context as AppCompatActivity).supportFragmentManager)
 
-        if (retrieveDistrict != null) {
-            districtTittle.value = retrieveDistrict?.name?.uppercase()
-            if (retrieveDistrict?.pois?.size == 0) poisCount.value = "0"
-            else poisCount.value = retrieveDistrict?.pois?.size.toString()
-        }
-
-        fragmentMapBinding?.poisVM = this //Update the view with dataBinding
-        loadMap()
-        map?.let { onMapReady(it) }
-    }
 
     //Set the POI detail in a popup
     fun popUpDetail(mPoi: Poi?, popUpBinding: PopUpPoisDetailBinding) {
@@ -140,46 +128,11 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
         loadMapPopUp(popUpBinding)
     }
 
-    //TODO : Cities Navigator
-    fun goToList() = replaceFragment(position?.let { PoisDistrictListFragment(retrieveDistrict, selectedCity, it, this) }, (fragmentPoisListBinding?.root?.context as AppCompatActivity).supportFragmentManager)
-
-    private fun goToDetail(mPoi: Poi?) = replaceFragment(mPoi?.let { it1 -> DetailFragment(it1, this) }, (fragmentMapBinding?.root?.context as AppCompatActivity).supportFragmentManager)
-
-    private fun setMapStyle(map: GoogleMap) {
-        try { val success = map.setMapStyle(fragmentMapBinding?.root?.context?.let { MapStyleOptions.loadRawResourceStyle(it, R.raw.map_style) })
-            if (!success) Log.e("__MAP", "Style parsing failed.")
-        } catch (e: Resources.NotFoundException) { Log.e("__MAP", "Can't find style. Error: ", e) }
-    }
-
-    //Map fragment
-    private fun loadMap() {
-        fragmentMapBinding?.map?.apply {
-            onCreate(mapsBundle)
-            onResume()
-        }
-        fragmentMapBinding?.map?.getMapAsync(this)
-        isIntoPopUp = false
-    }
-
-    //Map into PopUp
-    private fun loadMapPopUp(popUpBinding: PopUpPoisDetailBinding) {
-        popUpBinding.mapPopup.apply {
-            onCreate(mainBundle)
-            onResume()
-        }
-        popUpBinding.mapPopup.getMapAsync(this)
-        isIntoPopUp = true
-    }
-
-    fun getVM(): PoisViewModel = this
-
-    fun goToMap() = citiesNavigation.goToMap(this, selectedCity, (fragmentPoisListBinding?.root?.context as AppCompatActivity).supportFragmentManager)
-
     fun closePopUp() {
         when (popUpLocation) {
             0 -> goToList()
             1 -> goToMap()
-            2 -> replaceFragment(HomeDistrictFragment(this), (popUpBinding?.root?.context as AppCompatActivity).supportFragmentManager )
+            2 -> replaceFragment(PoisListFragment(poisViewModel = this), (popUpBinding?.root?.context as AppCompatActivity).supportFragmentManager , PoisListFragment.POI_ID)
         }
         buttonStop()
     }
@@ -208,12 +161,46 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
         }
     }
 
+    //Map fragment
+    fun loadMap() {
+        if (retrieveDistrict != null) {
+            districtTittle.value = retrieveDistrict?.name?.uppercase()
+            if (retrieveDistrict?.pois?.size == 0) poisCount.value = "0"
+            else poisCount.value = retrieveDistrict?.pois?.size.toString()
+        }
+
+        fragmentMapBinding?.map?.apply {
+            onCreate(mapsBundle)
+            onResume()
+        }
+        fragmentMapBinding?.map?.getMapAsync(this)
+        isIntoPopUp = false
+
+        map?.let { onMapReady(it) }
+    }
+
+    //Map into PopUp
+    private fun loadMapPopUp(popUpBinding: PopUpPoisDetailBinding) {
+        popUpBinding.mapPopup.apply {
+            onCreate(mainBundle)
+            onResume()
+        }
+        popUpBinding.mapPopup.getMapAsync(this)
+        isIntoPopUp = true
+    }
+
+    private fun setMapStyle(map: GoogleMap) {
+        try { val success = map.setMapStyle(fragmentMapBinding?.root?.context?.let { MapStyleOptions.loadRawResourceStyle(it, R.raw.map_style) })
+            if (!success) Log.e("__MAP", "Style parsing failed.")
+        } catch (e: Resources.NotFoundException) { Log.e("__MAP", "Can't find style. Error: ", e) }
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         googleMap.let { map = it }
         googleMap.uiSettings.isZoomControlsEnabled = true //Zoom in/out
 
         val poisSize = retrieveDistrict?.pois?.size ?: 0
-        val zoomLevel = 15f
+        val zoomLevel = 6f //15f
         var mLatLng: LatLng
 
         when (isIntoPopUp) {
@@ -248,14 +235,10 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
         }//When
     }
 
-    fun insertLocalPoi(mPoi: Poi){
-        mPoi.apply {
-            city = selectedCity
-            district = districtTittle.value
-        }
-        localRepository.insertPoi(mPoi)
-    }
+    //Local DB
+    fun insertLocalPoi(mPoi: Poi) : Boolean = localRepository.insertPoi(mPoi)
 
-    fun deleteLocalPoi(name: String) = localRepository.deletePoi(name)
+    fun deleteLocalPoi(name: String) : Boolean = localRepository.deletePoi(name)
+
 
 }

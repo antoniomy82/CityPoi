@@ -35,4 +35,8 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
         }
     }
 
+    companion object {
+        const val POI_ID = "DetailFragment"
+    }
+
 }

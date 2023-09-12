@@ -5,9 +5,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 interface LocalRepository {
 
-    fun insertPoi(poi: Poi)
+    fun insertPoi(poi: Poi): Boolean
 
-    fun deletePoi(name: String)
+    fun deletePoi(name: String): Boolean
 
-    suspend fun fetchPoiList(): MutableStateFlow<List<Poi>>
+    fun fetchPoiList(): MutableStateFlow<List<Poi>>
 }

@@ -8,6 +8,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.databinding.FragmentMapBinding
+import com.antoniomy.citypoi.main.replaceFragment
+import com.antoniomy.citypoi.pois.PoisListFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 
 class MapFragment(val poisVM: PoisViewModel, private var cityName: String? = null) : Fragment() {
@@ -29,11 +31,25 @@ class MapFragment(val poisVM: PoisViewModel, private var cityName: String? = nul
         poisVM.apply {
             fragmentMapsBinding?.let { fragmentMapBinding = it}
             savedInstanceState?.let {  mapsBundle = it }
-            setMapsUI()
-            selectedCity = cityName.toString()
+            loadMap()
+            fragmentMapBinding?.poisVM = poisVM
         }
 
+        fragmentMapsBinding?.let { setTittle(it) }
+    }
 
+    private fun setTittle(fragmentMapBinding: FragmentMapBinding) {
+        fragmentMapBinding.headerId.headerTitle.text = getString(R.string.maps_default_tittle) //Top bar title
+
+        fragmentMapBinding.headerId.headerBack.setOnClickListener {//Back arrow
+            replaceFragment(
+                PoisListFragment(poisViewModel = poisVM), parentFragmentManager, PoisListFragment.POI_ID)
+        }
+
+    }
+
+    companion object {
+        const val POI_ID = "MapFragment"
     }
 
 }

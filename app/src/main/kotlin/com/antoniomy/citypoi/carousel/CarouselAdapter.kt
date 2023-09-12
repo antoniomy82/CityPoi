@@ -63,7 +63,7 @@ class CarouselAdapter(
             viewModel.popUpLocation = 2
             replaceFragment(
                 DetailFragment(itemList[position], viewModel),
-                (context as AppCompatActivity).supportFragmentManager
+                (context as AppCompatActivity).supportFragmentManager, DetailFragment.POI_ID
             )
         }
 

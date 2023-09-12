@@ -2,17 +2,17 @@ package com.antoniomy.citypoi.navigation
 
 import androidx.fragment.app.FragmentManager
 import com.antoniomy.citypoi.detail.DetailFragment
-import com.antoniomy.citypoi.districtlist.PoisDistrictListFragment
-import com.antoniomy.citypoi.home.HomeDistrictFragment
+import com.antoniomy.citypoi.districts.DistrictsFragment
 import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.map.MapFragment
+import com.antoniomy.citypoi.pois.PoisListFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Poi
 
 class CitiesNavigationImpl : CitiesNavigation {
     override fun goToHome( poisViewModel:PoisViewModel ,fragmentManager: FragmentManager) {
-        replaceFragment(HomeDistrictFragment(poisViewModel), fragmentManager)
+        replaceFragment(DistrictsFragment(poisViewModel), fragmentManager, DistrictsFragment.POI_ID)
     }
 
     override fun goToMap(
@@ -20,7 +20,7 @@ class CitiesNavigationImpl : CitiesNavigation {
         selectedCity: String,
         fragmentManager: FragmentManager
     ) {
-        replaceFragment(MapFragment(poisVM, selectedCity), fragmentManager)
+        replaceFragment(MapFragment(poisVM, selectedCity), fragmentManager, MapFragment.POI_ID)
     }
 
     override fun goToList(
@@ -30,16 +30,17 @@ class CitiesNavigationImpl : CitiesNavigation {
         fragmentManager: FragmentManager,
         poisViewModel:PoisViewModel
     ) {
-        replaceFragment(PoisDistrictListFragment(
+        replaceFragment(PoisListFragment(
             retrieveDistrict,
             selectedCity,
             position,
             poisViewModel
-        ), fragmentManager)
+        ), fragmentManager, PoisListFragment.POI_ID)
 
     }
 
     override fun goToDetail(mPoi: Poi?, poisVM: PoisViewModel, fragmentManager: FragmentManager) {
-       replaceFragment(mPoi?.let { it1 -> DetailFragment(it1, poisVM) }, fragmentManager)
+        mPoi?.let { it1 -> DetailFragment(it1, poisVM) }
+            ?.let { replaceFragment(it, fragmentManager, DetailFragment.POI_ID) }
     }
 }

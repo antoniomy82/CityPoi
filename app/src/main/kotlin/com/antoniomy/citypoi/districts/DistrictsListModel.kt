@@ -1,6 +1,6 @@
-package com.antoniomy.citypoi.home
+package com.antoniomy.citypoi.districts
 
-data class CitiesListModel(
+data class DistrictsListModel(
     var cityName: String? = "",
     var district: String? = "",
     var flag: Int? = 0,

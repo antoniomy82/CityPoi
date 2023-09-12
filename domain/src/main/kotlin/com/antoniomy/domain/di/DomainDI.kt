@@ -35,9 +35,7 @@ object DomainDI {
 
     @Provides
     @Singleton
-    fun providesDistrictRemoteRepo(remoteService: RemoteService): RemoteRepository = RemoteRepositoryImpl(remoteService ,
-        remoteJson()
-    )
+    fun providesDistrictRemoteRepo(remoteService: RemoteService): RemoteRepository = RemoteRepositoryImpl(remoteService , remoteJson())
 
 
     //Local DB Room
