@@ -1,21 +1,26 @@
 package com.antoniomy.citypoi
 
+import android.content.Context
+import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.datasource.local.LocalRepository
 import com.antoniomy.domain.datasource.remote.RemoteRepository
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Poi
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verify
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
-class PoisViewModelTest {
 
+class PoisViewModelTest {
     private val localRepository: LocalRepository = mockk()
     private val remoteRepository: RemoteRepository = mockk()
     private val mPoi: Poi = mockk()
+    private val viewModel = spyk(PoisViewModel(remoteRepository, localRepository))
+    private val mContext: Context = mockk()
 
     @Test
     fun `When insert point of interest on local db correctly then insertPoi return true`() =
@@ -106,19 +111,70 @@ class PoisViewModelTest {
         assertEquals(30, getDistrictList)
     }
 
-
-
     @Test
-    fun `Given a correct Mocked Json list when call getMockedList Then we received the pois of a district`()= runTest {
-        val mName = "JSON MODE"
-       // val mContext = mock(Context::class.java)
-       every { remoteRepository.getMockedList(mockk()).value } returns District()
+    fun `When set a district tittle Then retrieve a tittle`() = runTest {
+        //Given
+        val mTittle = "Hello world!"
+        every { viewModel.districtTittle.value } returns mTittle
+
+        //When
+        val mDistrictTittle = viewModel.districtTittle.value
+
+        //Then
+        assertEquals(mDistrictTittle, mTittle)
     }
 
     @Test
-    fun testSum() {
-        val expected = 6
-        assertEquals(expected, 4+2)
+    fun `When we call to remainingTime Then it get the time`() = runTest {
+        //Given
+        val mTime = "10"
+        every { viewModel.remainingTime.value } returns mTime
+
+        //When
+        val response = viewModel.remainingTime.value
+
+        //Then
+        assert(response == "10")
+    }
+
+
+    @Test
+    fun `When call getMockedList Then we received the complete district`() = runTest {
+        //Given
+        val mDistrict = District()
+        every { remoteRepository.getMockedList(mContext).value } returns mDistrict
+
+        //When
+        val fetchDistrict = remoteRepository.getMockedList(mContext).value
+
+        //Then
+        assertEquals(fetchDistrict, mDistrict)
+    }
+
+    @Test
+    fun `When call getMockedList Then we received name of a district`() = runTest {
+        //Given
+        val mName = "JSON MODE"
+        every { remoteRepository.getMockedList(mContext).value.name } returns mName
+
+        //When
+        val fetchDistrict = remoteRepository.getMockedList(mContext).value.name
+
+        //Then
+        assert(fetchDistrict == mName)
+    }
+
+    @Test
+    fun `When call getMockedList Then we received the number of pois to our district`() = runTest {
+        //Given
+        val mPoiListSize = 6
+        every { remoteRepository.getMockedList(mContext).value.pois?.size } returns mPoiListSize
+
+        //When
+        val fetchDistrict = remoteRepository.getMockedList(mContext).value.pois?.size
+
+        //Then
+        assertEquals(6, fetchDistrict)
     }
 
 

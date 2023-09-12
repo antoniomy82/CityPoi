@@ -46,7 +46,7 @@ class RemoteRepositoryImpl @Inject constructor(
         val retrieveDistrict = MutableStateFlow(District())
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                retrieveDistrict.value = remoteJson.getPoiJsonList(context).value.toDomain()
+                retrieveDistrict.value = remoteJson.getPoiJsonList(context).toDomain()
             } catch (t: Throwable){
                 when(t){
                     is HttpException ->  Log.e("httpError->", t.code().toString())

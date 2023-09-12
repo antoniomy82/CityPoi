@@ -4,14 +4,13 @@ import android.content.Context
 import com.antoniomy.data.R
 import com.antoniomy.data.model.DistrictDto
 import com.google.gson.Gson
-import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 
 class RemoteJsonImpl : RemoteJson {
 
-    override fun getPoiJsonList(context: Context): MutableStateFlow<DistrictDto> = try {
+    override fun getPoiJsonList(context: Context): DistrictDto = try {
 
         val jsonInput: InputStream = context.applicationContext.resources.openRawResource(R.raw.poi_mock_list)
         val outputStream = ByteArrayOutputStream()
@@ -24,9 +23,7 @@ class RemoteJsonImpl : RemoteJson {
         outputStream.close()
         jsonInput.close()
 
-        MutableStateFlow(Gson().fromJson(outputStream.toString(), DistrictDto::class.java))
-    } catch (e: IOException) {
-        MutableStateFlow(DistrictDto())
-    }
+        Gson().fromJson(outputStream.toString(), DistrictDto::class.java)
+    } catch (e: IOException) { DistrictDto()}
 
 }

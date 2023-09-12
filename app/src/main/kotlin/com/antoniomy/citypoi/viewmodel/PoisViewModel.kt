@@ -59,7 +59,7 @@ class PoisViewModel @Inject constructor(private val remoteRepository: RemoteRepo
 
     //Main fragment values
     val districtTittle = MutableLiveData<String>()
-    val poisCount = MutableLiveData<String>().also { it.value = "0" }
+    val poisCount = MutableLiveData("0")
     var fragmentPoisListBinding : FragmentDistrictListBinding? = null
 
     //Maps Fragment values
