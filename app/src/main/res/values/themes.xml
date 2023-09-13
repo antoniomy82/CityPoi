@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.CityPoi" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
@@ -17,4 +17,14 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="CustomDialogTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="NoBackgroundDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+
 </resources>

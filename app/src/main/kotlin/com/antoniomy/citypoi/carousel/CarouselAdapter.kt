@@ -60,7 +60,7 @@ class CarouselAdapter(
         }
 
         view.setOnClickListener {
-            viewModel.popUpLocation = 2
+            viewModel.popUpDirection = PoisViewModel.DIRECTION.GO_TO_LIST
             replaceFragment(
                 DetailFragment(itemList[position], viewModel),
                 (context as AppCompatActivity).supportFragmentManager, DetailFragment.POI_ID

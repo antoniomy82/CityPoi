@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.carousel.CarouselFragment
 import com.antoniomy.citypoi.databinding.FragmentDistrictListBinding
+import com.antoniomy.citypoi.main.CustomProgressDialog
 import com.antoniomy.citypoi.main.collectInLifeCycle
 import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
@@ -28,13 +28,15 @@ class PoisListFragment(
 ) : Fragment() {
 
     private lateinit var fragmentDistrictListBinding: FragmentDistrictListBinding
+    private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        fragmentDistrictListBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_district_list, container, false)
+        fragmentDistrictListBinding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_district_list, container, false)
         return fragmentDistrictListBinding.root
     }
 
@@ -42,12 +44,15 @@ class PoisListFragment(
         super.onViewCreated(view, savedInstanceState)
         initObservers()
         setUI()
+
         poisViewModel.fragmentPoisListBinding = fragmentDistrictListBinding
-       // context?.let { poisViewModel.getDistrictMocked(it) }
+        // context?.let { poisViewModel.getDistrictMocked(it) }
+
     }
 
 
     private fun setUI() {
+
         //Top bar title
         val headerTitle = view?.findViewById<View>(R.id.headerTitle) as TextView
         headerTitle.text = getString(R.string.pois_default_tittle)
@@ -60,8 +65,7 @@ class PoisListFragment(
             //replaceFragment(DistrictsFragment(poisViewModel), parentFragmentManager)
             setBackgroundResource(R.drawable.baseline_close_24)
 
-            setOnClickListener {
-                activity?.finish()
+            setOnClickListener { activity?.finish()
                 exitProcess(0)
             }
         }
@@ -71,11 +75,14 @@ class PoisListFragment(
             setOnClickListener {
                 replaceFragment(
                     CarouselFragment(poisViewModel),
-                    (context as AppCompatActivity).supportFragmentManager, CarouselFragment.POI_ID)
+                    (context as AppCompatActivity).supportFragmentManager, CarouselFragment.POI_ID
+                )
             }
         }
 
         context?.let { poisViewModel.getDistrictMocked(it) }
+
+
         //poisViewModel.getDistrict("$urlID")
     }
 
@@ -84,7 +91,7 @@ class PoisListFragment(
         when (mDistrict) {
             null -> {
                 poisViewModel.fetchDistricts.collectInLifeCycle(viewLifecycleOwner) { it ->
-                    setTittleFromAdapter(isEmpty = true)
+                    setTittleFromAdapter()
 
                     it.let {
                         poisViewModel.retrieveDistrict = it
@@ -111,10 +118,12 @@ class PoisListFragment(
             }
         }
 
-        poisViewModel.errorResponse.collectInLifeCycle(viewLifecycleOwner) { errorMessage ->
-            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
-            //context?.let { poisViewModel.getDistrictMocked(it) }
-        }
+        poisViewModel.loaderEvent.collectInLifeCycle(viewLifecycleOwner) { onLoaderEvent(it) }
+    }
+
+    private fun onLoaderEvent(event: PoisViewModel.LoaderEvent) = when (event) {
+        PoisViewModel.LoaderEvent.ShowLoading -> progressDialog.start("Cargando, por favor espere")
+        PoisViewModel.LoaderEvent.HideLoading -> progressDialog.stop()
     }
 
 
@@ -131,42 +140,12 @@ class PoisListFragment(
     }
 
 
-    private fun setTittleFromAdapter(
-        tittle: String = "",
-        count: String = "",
-        isEmpty: Boolean = false
-    ) {
-
-        when (isEmpty) {
-            true -> showLoading()
-            false -> hideLoading(tittle, count)
-        }
-    }
-
-
-    private fun showLoading() {
-        poisViewModel.apply {
-            districtTittle.value = context?.getString(R.string.loading)
-            poisCount.value = ""
-        }
-        fragmentDistrictListBinding.apply {
-            progressBar.visibility = View.VISIBLE
-            mapLayout.visibility = View.GONE
-            rvPois.visibility = View.GONE
-        }
-    }
-
-    private fun hideLoading(tittle: String, count: String) {
+    private fun setTittleFromAdapter(tittle: String = "", count: String = "") =
         poisViewModel.apply {
             districtTittle.value = tittle.uppercase()
             poisCount.value = count
         }
-        fragmentDistrictListBinding.apply {
-            progressBar.visibility = View.GONE
-            mapLayout.visibility = View.VISIBLE
-            rvPois.visibility = View.VISIBLE
-        }
-    }
+
     companion object {
         const val POI_ID = "PoisListFragment"
     }
