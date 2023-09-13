@@ -81,7 +81,7 @@ class CarouselFragment(private val viewModel: PoisViewModel) : Fragment() {
         dotsCount = viewPagerAdapter.count
 
         CAROUSEL_MODEL.apply {
-            if (primaryButtonText != null) binding.carouselNextBtn.text = getString(primaryButtonText)  //Set customise text
+            primaryButtonText?.let {  binding.carouselNextBtn.text = getString(it)  }//Set customise text
         }
 
     }

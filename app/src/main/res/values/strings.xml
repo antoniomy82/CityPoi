@@ -27,7 +27,9 @@
     <string name="splash_text_barcelona">Ceuta</string>
 
     <string name="bottom_sheet_tittle">"AVISO ALMACENAMIENTO"</string>
+    <string name="bottom_sheet_tittle_delete">"AVISO BORRADO"</string>
     <string name="bottom_sheet_message_save">"¿Desea guardar este punto de interes?"</string>
+    <string name="bottom_sheet_message_delete">"¿Desea eliminar este punto de interes?"</string>
 
     <!--Carousel-->
     <string name="carousel_next_button">Next</string>

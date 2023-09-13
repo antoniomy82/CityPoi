@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LocalRepositoryImpl @Inject constructor(private val poiDAO: PoiDAO) : LocalRepository {
@@ -58,4 +59,21 @@ class LocalRepositoryImpl @Inject constructor(private val poiDAO: PoiDAO) : Loca
 
         return fetchPois
     }
+
+    override suspend fun readPoi(name: String): MutableStateFlow<Poi> =
+        withContext(Dispatchers.IO) {
+            MutableStateFlow(poiDAO.readPoi(name).toDomain())
+        }
+
+    /*
+           CoroutineScope(Dispatchers.IO).launch {
+              poiDAO.searchPoi(name)
+            Log.d("callDataLayer:" , callData.city.toString())
+               searchPoi.value = true
+           }
+
+        return searchPoi
+    }
+
+     */
 }

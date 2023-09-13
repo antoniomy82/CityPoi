@@ -10,4 +10,6 @@ interface LocalRepository {
     fun deletePoi(name: String): Boolean
 
     fun fetchPoiList(): MutableStateFlow<List<Poi>>
+
+    suspend fun readPoi(name: String): MutableStateFlow<Poi>
 }

@@ -18,4 +18,6 @@ interface PoiDAO {
     @Query("SELECT * FROM Poi")
     fun fetchPois(): List<PoisDto>
 
+    @Query("SELECT * FROM Poi WHERE name == :arg0")
+    fun readPoi(arg0: String): PoisDto
 }

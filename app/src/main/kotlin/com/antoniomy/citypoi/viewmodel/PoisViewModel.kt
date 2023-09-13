@@ -55,6 +55,7 @@ class PoisViewModel @Inject constructor(
     var fetchDistricts = MutableStateFlow(District())
     var fetchPois = MutableStateFlow(listOf<Poi>())
     val loaderEvent = MutableStateFlow<LoaderEvent>(LoaderEvent.ShowLoading)
+    var readPoiObserver = MutableStateFlow(Poi())
 
     private var citiesNavigation = CitiesNavigationImpl()
     private var mainBundle: Bundle? = null
@@ -94,7 +95,9 @@ class PoisViewModel @Inject constructor(
     fun getDistrictMocked(context: Context) = viewModelScope.launch {
         remoteRepository.getMockedList(context).collect {
             fetchDistricts.value = it
-            Handler(Looper.getMainLooper()).postDelayed({ loaderEvent.value = LoaderEvent.HideLoading }, 1000)
+            Handler(Looper.getMainLooper()).postDelayed({
+                loaderEvent.value = LoaderEvent.HideLoading
+            }, 1000)
         }
     }
 
@@ -170,10 +173,11 @@ class PoisViewModel @Inject constructor(
     }
 
     fun closePopUp() {
-        Toast.makeText(popUpBinding?.root?.context,"Volviendo a POIs...", Toast.LENGTH_SHORT).show()
+        Toast.makeText(popUpBinding?.root?.context, "Volviendo a POIs...", Toast.LENGTH_SHORT)
+            .show()
         when (popUpDirection) {
             DIRECTION.GO_TO_LIST -> goToList()
-            DIRECTION.GO_TO_MAP-> goToMap()
+            DIRECTION.GO_TO_MAP -> goToMap()
         }
         buttonStop()
     }
@@ -314,11 +318,16 @@ class PoisViewModel @Inject constructor(
 
     fun deleteLocalPoi(name: String): Boolean = localRepository.deletePoi(name)
 
+    suspend fun readPoi(name: String) = viewModelScope.launch {
+        localRepository.readPoi(name).collect {
+            readPoiObserver.value = it
+        }
+    }
 
-    sealed class LoaderEvent{
+    sealed class LoaderEvent {
         data object ShowLoading : LoaderEvent()
         data object HideLoading : LoaderEvent()
     }
 
-    enum class DIRECTION{ GO_TO_LIST, GO_TO_MAP }
+    enum class DIRECTION { GO_TO_LIST, GO_TO_MAP }
 }

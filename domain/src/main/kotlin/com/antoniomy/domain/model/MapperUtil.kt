@@ -41,3 +41,16 @@ fun Poi.toData(): PoisDto = PoisDto(
     district = this.district
 )
 
+fun PoisDto?.toDomain() : Poi = Poi(
+    image = this?.imageLocal,
+    latitude = this?.latitude,
+    longitude = this?.longitude,
+    categoryIcon = this?.categoryIcon,
+    categoryMarker = this?.categoryMarker,
+    name = this?.name?:"",
+    description = this?.description,
+    audio = this?.audioLocal,
+    city = this?.city,
+    district = this?.district
+)
+
