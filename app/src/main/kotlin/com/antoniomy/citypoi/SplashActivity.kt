@@ -1,4 +1,4 @@
-package com.antoniomy.citypoi.main
+package com.antoniomy.citypoi
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -8,7 +8,6 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.antoniomy.citypoi.R
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
@@ -29,8 +28,7 @@ class SplashActivity : AppCompatActivity() {
             object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation) {}
                 override fun onAnimationRepeat(animation: Animation) {}
-                override fun onAnimationEnd(animation: Animation) {
-                }
+                override fun onAnimationEnd(animation: Animation) {}
             })
 
         findViewById<Button>(R.id.btn_start).setOnClickListener {

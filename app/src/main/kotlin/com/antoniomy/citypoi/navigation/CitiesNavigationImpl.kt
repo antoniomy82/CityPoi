@@ -1,46 +1,41 @@
 package com.antoniomy.citypoi.navigation
 
 import androidx.fragment.app.FragmentManager
+import com.antoniomy.citypoi.carousel.CarouselFragment
+import com.antoniomy.citypoi.common.replaceFragment
 import com.antoniomy.citypoi.detail.DetailFragment
 import com.antoniomy.citypoi.districts.DistrictsFragment
-import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.map.MapFragment
 import com.antoniomy.citypoi.pois.PoisListFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
-import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Poi
 
 class CitiesNavigationImpl : CitiesNavigation {
     override fun goToHome( poisViewModel:PoisViewModel ,fragmentManager: FragmentManager) {
-        replaceFragment(DistrictsFragment(poisViewModel), fragmentManager, DistrictsFragment.POI_ID)
+        fragmentManager.replaceFragment(DistrictsFragment(poisViewModel), DistrictsFragment.POI_ID)
     }
 
     override fun goToMap(
-        poisVM: PoisViewModel,
-        selectedCity: String,
+        poisViewModel: PoisViewModel,
         fragmentManager: FragmentManager
     ) {
-        replaceFragment(MapFragment(poisVM, selectedCity), fragmentManager, MapFragment.POI_ID)
+        fragmentManager.replaceFragment(MapFragment(poisViewModel), MapFragment.POI_ID)
     }
 
     override fun goToList(
-        retrieveDistrict: District?,
-        selectedCity: String,
-        position: Int,
-        fragmentManager: FragmentManager,
-        poisViewModel:PoisViewModel
+        poisViewModel:PoisViewModel,
+        fragmentManager: FragmentManager
     ) {
-        replaceFragment(PoisListFragment(
-            retrieveDistrict,
-            selectedCity,
-            position,
-            poisViewModel
-        ), fragmentManager, PoisListFragment.POI_ID)
+        fragmentManager.replaceFragment(PoisListFragment(poisViewModel), PoisListFragment.POI_ID)
 
     }
 
     override fun goToDetail(mPoi: Poi?, poisVM: PoisViewModel, fragmentManager: FragmentManager) {
         mPoi?.let { it1 -> DetailFragment(it1, poisVM) }
-            ?.let { replaceFragment(it, fragmentManager, DetailFragment.POI_ID) }
+            ?.let { fragmentManager.replaceFragment(it, DetailFragment.POI_ID) }
+    }
+
+    override fun goToCarousel(poisVM: PoisViewModel, fragmentManager: FragmentManager) {
+        fragmentManager.replaceFragment(CarouselFragment(poisVM), CarouselFragment.POI_ID)
     }
 }

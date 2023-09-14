@@ -1,10 +1,10 @@
-package com.antoniomy.citypoi.main
+package com.antoniomy.citypoi
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.antoniomy.citypoi.R
+import com.antoniomy.citypoi.common.replaceFragment
 import com.antoniomy.citypoi.pois.PoisListFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
         //Load Home fragment
         //replaceFragment(DistrictsFragment(poisViewModel), supportFragmentManager)
-        replaceFragment(PoisListFragment( poisViewModel = poisViewModel),supportFragmentManager, PoisListFragment.POI_ID)
+        supportFragmentManager.replaceFragment(PoisListFragment( poisViewModel = poisViewModel), PoisListFragment.POI_ID)
     }
 
     //Disable automatic back button

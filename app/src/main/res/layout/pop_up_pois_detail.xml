@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="vm"
-            type="com.antoniomy.citypoi.viewmodel.PoisViewModel" />
+            name="frg"
+            type="com.antoniomy.citypoi.detail.DetailFragment" />
     </data>
 
 
@@ -49,7 +49,7 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
-                        android:onClick="@{()->vm.closePopUp()}"
+                        android:onClick="@{()->frg.closePopUp()}"
                         android:src="@drawable/back_ios_new_24"
                         app:tint="@color/title_text"
                         tools:ignore="ContentDescription" />
@@ -121,7 +121,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         android:layout_weight="0.3"
-                        android:onClick="@{()->vm.buttonPlay()}"
+                        android:onClick="@{()->frg.buttonPlay()}"
                         android:src="@drawable/ic_play"
                         tools:ignore="ContentDescription" />
 
@@ -134,7 +134,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         android:layout_weight="0.3"
-                        android:onClick="@{()->vm.buttonStop()}"
+                        android:onClick="@{()->frg.buttonStop()}"
                         android:src="@drawable/ic_stop"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
@@ -154,7 +154,7 @@
                         android:gravity="center_vertical|center_horizontal"
                         android:includeFontPadding="false"
                         android:singleLine="true"
-                        android:text="@={vm.remainingTime}"
+                        android:text="@={frg.remainingTime}"
                         android:textColor="#4AF626"
                         android:textSize="38sp" />
 

@@ -1,4 +1,4 @@
-package com.antoniomy.citypoi.main
+package com.antoniomy.citypoi.common
 
 import android.content.Context
 import android.view.View

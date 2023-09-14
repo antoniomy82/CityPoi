@@ -8,9 +8,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
+import com.antoniomy.citypoi.common.replaceFragment
 import com.antoniomy.citypoi.databinding.AdapterPoisDistrictListBinding
 import com.antoniomy.citypoi.detail.DetailFragment
-import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.District
 import com.bumptech.glide.Glide
@@ -44,8 +44,8 @@ class PoisListAdapter(
             Handler(Looper.getMainLooper()).postDelayed({
                 poisVm.loaderEvent.value = PoisViewModel.LoaderEvent.HideLoading
                 mDistrict.pois?.get(position)?.let { it1 -> DetailFragment(it1, poisVm) }
-                    ?.let { it2 -> replaceFragment(it2, fm, DetailFragment.POI_ID) }
-            }, 1500)
+                    ?.let { it2 -> fm.replaceFragment(it2, DetailFragment.POI_ID) }
+            }, 500)
 
         }
 

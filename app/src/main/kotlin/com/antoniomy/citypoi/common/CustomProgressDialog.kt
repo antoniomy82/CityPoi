@@ -1,4 +1,4 @@
-package com.antoniomy.citypoi.main
+package com.antoniomy.citypoi.common
 
 import android.app.Dialog
 import android.content.Context
@@ -66,9 +66,6 @@ class CustomProgressDialog(context: Context) {
         init {
             // Set Semi-Transparent Color for Dialog Background
             window?.decorView?.rootView?.setBackgroundResource(R.color.white)
-            window?.decorView?.setOnApplyWindowInsetsListener { _, insets ->
-                insets.consumeSystemWindowInsets()
-            }
         }
     }
 }

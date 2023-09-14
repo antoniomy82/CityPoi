@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="poisVM"
             type="com.antoniomy.citypoi.viewmodel.PoisViewModel" />
@@ -48,7 +47,7 @@
             app:layout_constraintTop_toBottomOf="@+id/container_toolbar">
 
             <TextView
-                android:id="@+id/district_tittle"
+                android:id="@+id/map_main_tittle"
                 android:layout_width="0sp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8sp"
@@ -56,7 +55,7 @@
                 android:layout_weight="0.8"
                 android:gravity="center_horizontal|center_vertical"
                 android:maxLines="2"
-                android:text="@={poisVM.districtTittle}"
+                android:text="@={poisVM.toolbarSubtitle}"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="20sp"
@@ -132,7 +131,6 @@
             android:layout_width="match_parent"
             android:layout_height="42sp"
             android:background="@color/gray_bottom_bar"
-            android:onClick="@{()->poisVM.goToMap()}"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

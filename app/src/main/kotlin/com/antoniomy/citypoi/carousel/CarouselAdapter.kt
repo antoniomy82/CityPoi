@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.antoniomy.citypoi.R
+import com.antoniomy.citypoi.common.replaceFragment
 import com.antoniomy.citypoi.detail.DetailFragment
-import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.Poi
 import com.bumptech.glide.Glide
@@ -61,10 +61,7 @@ class CarouselAdapter(
 
         view.setOnClickListener {
             viewModel.popUpDirection = PoisViewModel.DIRECTION.GO_TO_LIST
-            replaceFragment(
-                DetailFragment(itemList[position], viewModel),
-                (context as AppCompatActivity).supportFragmentManager, DetailFragment.POI_ID
-            )
+            (context as AppCompatActivity).supportFragmentManager.replaceFragment(DetailFragment(itemList[position], viewModel), DetailFragment.POI_ID)
         }
 
         Log.d(

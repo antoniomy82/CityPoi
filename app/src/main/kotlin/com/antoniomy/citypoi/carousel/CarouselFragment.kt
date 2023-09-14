@@ -7,14 +7,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.antoniomy.citypoi.R
+import com.antoniomy.citypoi.common.collectInLifeCycle
+import com.antoniomy.citypoi.common.replaceFragment
 import com.antoniomy.citypoi.databinding.FragmentCarouselBinding
-import com.antoniomy.citypoi.main.collectInLifeCycle
-import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.pois.PoisListFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 
@@ -67,7 +66,7 @@ class CarouselFragment(private val viewModel: PoisViewModel) : Fragment() {
 
         view?.findViewById<View>(R.id.headerBack)?.apply {
             setOnClickListener {
-                replaceFragment(PoisListFragment(cityName = getString(R.string.pois_default_tittle), poisViewModel = viewModel), (context as AppCompatActivity).supportFragmentManager, POI_ID)
+               parentFragmentManager.replaceFragment(PoisListFragment(poisViewModel = viewModel), POI_ID)
             }
         }
     }

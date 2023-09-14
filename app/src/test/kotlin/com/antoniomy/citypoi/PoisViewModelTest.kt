@@ -115,26 +115,13 @@ class PoisViewModelTest {
     fun `When set a district tittle Then retrieve a tittle`() = runTest {
         //Given
         val mTittle = "Hello world!"
-        every { viewModel.districtTittle.value } returns mTittle
+        every { viewModel.toolbarSubtitle } returns mTittle
 
         //When
-        val mDistrictTittle = viewModel.districtTittle.value
+        val mDistrictTittle = viewModel.toolbarSubtitle
 
         //Then
         assertEquals(mDistrictTittle, mTittle)
-    }
-
-    @Test
-    fun `When we call to remainingTime Then it get the time`() = runTest {
-        //Given
-        val mTime = "10"
-        every { viewModel.remainingTime.value } returns mTime
-
-        //When
-        val response = viewModel.remainingTime.value
-
-        //Then
-        assert(response == "10")
     }
 
 

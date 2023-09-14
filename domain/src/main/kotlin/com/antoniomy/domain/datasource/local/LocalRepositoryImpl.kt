@@ -64,16 +64,4 @@ class LocalRepositoryImpl @Inject constructor(private val poiDAO: PoiDAO) : Loca
         withContext(Dispatchers.IO) {
             MutableStateFlow(poiDAO.readPoi(name).toDomain())
         }
-
-    /*
-           CoroutineScope(Dispatchers.IO).launch {
-              poiDAO.searchPoi(name)
-            Log.d("callDataLayer:" , callData.city.toString())
-               searchPoi.value = true
-           }
-
-        return searchPoi
-    }
-
-     */
 }

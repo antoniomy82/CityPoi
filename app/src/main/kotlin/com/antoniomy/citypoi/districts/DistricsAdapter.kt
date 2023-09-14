@@ -8,8 +8,8 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
+import com.antoniomy.citypoi.common.replaceFragment
 import com.antoniomy.citypoi.databinding.AdapterHomeDistrictsBinding
-import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.pois.PoisListFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 
@@ -34,8 +34,8 @@ class DistricsAdapter(
             imagePoi.background = districtList[position].flag?.let { ContextCompat.getDrawable(context, it) }
 
             root.setOnClickListener {
-                districtList[position].urlId?.let { it1 -> PoisListFragment(null, districtList[position].cityName, it1, poisViewModel)
-                }?.let { it2 -> replaceFragment(it2, (context as AppCompatActivity).supportFragmentManager, PoisListFragment.POI_ID) }
+                districtList[position].urlId?.let { PoisListFragment( poisViewModel)
+                }?.let { it2 -> (context as AppCompatActivity).supportFragmentManager.replaceFragment(it2, PoisListFragment.POI_ID) }
             }
         }
     }

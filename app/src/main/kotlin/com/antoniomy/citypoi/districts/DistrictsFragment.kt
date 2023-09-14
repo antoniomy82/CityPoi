@@ -5,15 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.carousel.CarouselFragment
+import com.antoniomy.citypoi.common.replaceFragment
 import com.antoniomy.citypoi.databinding.FragmentHomeDistrictBinding
-import com.antoniomy.citypoi.main.replaceFragment
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import kotlin.system.exitProcess
 
@@ -64,7 +63,7 @@ class DistrictsFragment(private val poisViewModel: PoisViewModel) : Fragment() {
 
         view?.findViewById<View>(R.id.saved_pois)?.apply {
             visibility = View.VISIBLE
-            setOnClickListener {replaceFragment(CarouselFragment(poisViewModel), (context as AppCompatActivity).supportFragmentManager, POI_ID)}
+            setOnClickListener {parentFragmentManager.replaceFragment(CarouselFragment(poisViewModel), POI_ID)}
         }
         view?.findViewById<View>(R.id.headerBack)?.apply {
             setBackgroundResource(R.drawable.baseline_close_24)
@@ -74,7 +73,7 @@ class DistrictsFragment(private val poisViewModel: PoisViewModel) : Fragment() {
                 exitProcess(0)
             }
         }
-        poisViewModel.poisCount.value = homeCities.size.toString()  //Set counter
+        poisViewModel.poisCount = homeCities.size.toString()  //Set counter
     }
 
     private fun setHomeRecyclerViewAdapter() {

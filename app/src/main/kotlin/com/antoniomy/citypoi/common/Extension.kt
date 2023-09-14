@@ -1,9 +1,8 @@
-package com.antoniomy.citypoi.main
+package com.antoniomy.citypoi.common
 
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.CountDownTimer
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -12,7 +11,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.antoniomy.citypoi.R
-import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -26,32 +24,12 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 
-fun replaceFragment(fragment: Fragment, fragmentManager: FragmentManager, tag: String) {
-    try { fragmentManager.commit { replace(R.id.frame_container, fragment, tag) } }
+fun FragmentManager.replaceFragment(fragment: Fragment, tag: String) {
+    try { this.commit { replace(R.id.frame_container, fragment, tag) } }
     catch (e: Exception) { Log.e("__replaceFragment", e.toString()) }
 }
 
 
-fun getTimeResult(millisUntilFinished: Long) =
-    "${(millisUntilFinished / 1000 / 60).toString().padStart(2, '0')}:" +
-            "${(millisUntilFinished / 1000 % 60).toString().padStart(2, '0')} "
-
-fun mediaProgress(totalDuration: Long, viewModel: PoisViewModel): CountDownTimer {
-    val timer = object : CountDownTimer(totalDuration, 1000) {
-
-        override fun onTick(millisUntilFinished: Long) {
-            viewModel.apply {
-                remainingTime.value = getTimeResult(millisUntilFinished)
-                popUpBinding?.vm = getVM() //Update the view with dataBinding
-                //TODO: Cambiar por un flow
-            }
-        }
-
-        override fun onFinish() = viewModel.buttonStop()
-    }
-    timer.start()
-    return timer
-}
 
 fun Marker.loadIcon(context: Context, url: String?) {
 
