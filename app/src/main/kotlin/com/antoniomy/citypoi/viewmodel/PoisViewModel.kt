@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.antoniomy.domain.datasource.local.LocalRepository
@@ -41,11 +42,9 @@ class PoisViewModel @Inject constructor(
     var iconFlow = MutableStateFlow<Bitmap?>(null)
 
     var retrieveDistrict: District? = null
-    var selectedPoi: Poi? = null
-    var iconCategory: String? = null
+    var popUpDirection: DIRECTION = DIRECTION.GO_TO_LIST
 
-
-    var popUpDirection: DIRECTION = DIRECTION.GO_TO_LIST  //TODO
+    val remainingTime = MutableLiveData<String>()
 
 /*
     fun getDistrict(urlId: String) = viewModelScope.launch {

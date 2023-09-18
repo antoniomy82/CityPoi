@@ -154,7 +154,7 @@
                         android:gravity="center_vertical|center_horizontal"
                         android:includeFontPadding="false"
                         android:singleLine="true"
-                        android:text="@={frg.remainingTime}"
+                        android:text="@={frg.actualTime}"
                         android:textColor="#4AF626"
                         android:textSize="38sp" />
 
@@ -181,18 +181,19 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:layout_gravity="center"
                             android:fontFamily="sans-serif-medium"
-                            android:text="@string/about_this_place"
+                            android:text="@={frg.aboutPoi}"
                             android:textColor="@color/district_bar"
-                            android:textSize="13sp"
+                            android:textSize="16sp"
                             android:textStyle="normal" />
 
                         <ImageView
                             android:id="@+id/icn_save"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_gravity="center"
-                            android:layout_marginEnd="15dp"
+
                             tools:ignore="ContentDescription,ImageContrastCheck" />
 
                     </LinearLayout>

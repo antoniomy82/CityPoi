@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.common.CustomBottomSheet
@@ -41,7 +40,7 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
 
     //Media player
-    val remainingTime = MutableLiveData<String>()
+
     private var totalDuration by Delegates.notNull<Long>()
     private var mediaPlayer: MediaPlayer? = null
     private var myUri: Uri? = null
@@ -50,7 +49,8 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
     private var timeValue: String = ""
     private var map: GoogleMap? = null
     private var mainBundle: Bundle? = null
-
+    var actualTime = ""
+    var aboutPoi = mPoi.city +" , "+ mPoi.district
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -66,11 +66,8 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
         setUi()
         setDbButtonListener()
         initObservers()
-        launchReadPoi()
     }
 
-
-    private fun launchReadPoi() = viewModel.viewModelScope.launch { viewModel.readPoi(mPoi.name) }
 
     private fun initObservers() {
         viewModel.readPoiObserver.collectInLifeCycle(viewLifecycleOwner) {
@@ -79,6 +76,8 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
                 else -> setButtonDelete()
             }
         }
+
+        viewModel.viewModelScope.launch { viewModel.readPoi(mPoi.name) }
 
         viewModel.imageFlow.collectInLifeCycle(viewLifecycleOwner) {
             popUpPoisDetailBinding?.photoPopup?.setImageBitmap(it)
@@ -90,6 +89,11 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
         }
 
         viewModel.loaderEvent.collectInLifeCycle(viewLifecycleOwner) { onLoaderEvent(it) }
+
+        viewModel.remainingTime.observe(viewLifecycleOwner){
+            actualTime = it
+            popUpPoisDetailBinding?.frg = updateFrg()
+        }
     }
 
     private fun onLoaderEvent(event: PoisViewModel.LoaderEvent) = when (event) {
@@ -99,12 +103,12 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
 
 
     private fun setButtonSave() {
-        popUpPoisDetailBinding?.icnSave?.setBackgroundResource(R.drawable.heart_icon)
+        popUpPoisDetailBinding?.icnSave?.setBackgroundResource(R.drawable.baseline_save_24)
         setDbButtonListener(false)
     }
 
     private fun setButtonDelete() {
-        popUpPoisDetailBinding?.icnSave?.setBackgroundResource(R.drawable.baseline_close_24)
+        popUpPoisDetailBinding?.icnSave?.setBackgroundResource(R.drawable.ic_delete)
         setDbButtonListener(true)
     }
 
@@ -121,7 +125,7 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
         setValues(
             getString(R.string.bottom_sheet_tittle_delete),
             getString(R.string.bottom_sheet_message_delete),
-            R.drawable.baseline_close_24
+            R.drawable.ic_delete
         )
         showBottomSheet()
         acceptBtn().setOnClickListener {
@@ -152,9 +156,7 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
     private fun setUi() {
         popUpPoisDetailBinding?.titlePopup?.text = mPoi.name
         popUpPoisDetailBinding?.streetPopup?.text = mPoi.description
-        viewModel.iconCategory = mPoi.categoryIcon //TODO
-        viewModel.selectedPoi = mPoi //TODO
-        popUpPoisDetailBinding?.let { loadMapPopUp(it) } //TODO
+        popUpPoisDetailBinding?.let { loadMapPopUp(it) }
         viewModel.loaderEvent.value = PoisViewModel.LoaderEvent.ShowLoading
 
         context?.let { viewModel.renderImage(it, viewModel.imageFlow, mPoi.image.toString()) }
@@ -166,20 +168,18 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
         mediaPlayer = MediaPlayer.create(context, myUri)
         totalDuration = mediaPlayer?.duration?.toLong() ?: 0
         timeValue = totalDuration.getTimeResult()
-        remainingTime.value = timeValue
+        viewModel.remainingTime.value = timeValue
         if (timeValue != "null") popUpPoisDetailBinding?.soundLayout?.visibility = View.VISIBLE
-        popUpPoisDetailBinding?.frg = this //Update the view with dataBinding
         viewModel.loaderEvent.value = PoisViewModel.LoaderEvent.HideLoading
     }
 
-    fun updateFrg() = this
+    private fun updateFrg() = this
 
-    private fun mediaProgress(totalDuration: Long): CountDownTimer {
-        val timer = object : CountDownTimer(totalDuration, 1000) {
+    private fun Long.mediaProgress(): CountDownTimer {
+        val timer = object : CountDownTimer(this, 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
-                remainingTime.value = millisUntilFinished.getTimeResult()
-                popUpPoisDetailBinding?.frg = updateFrg()
+                viewModel.remainingTime.value = millisUntilFinished.getTimeResult()
             }
 
             override fun onFinish() = buttonStop()
@@ -189,7 +189,7 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
     }
 
     fun buttonPlay() {
-        launchTimer = mediaProgress(totalDuration)
+        launchTimer = totalDuration.mediaProgress()
         mediaPlayer?.start()
 
         popUpPoisDetailBinding?.apply {
@@ -236,13 +236,13 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
         googleMap.uiSettings.isZoomControlsEnabled = true //Zoom in/out
 
         val zoomLevel = 15f
-        viewModel.selectedPoi.let {
+        mPoi.let {
             context.let {
                 map?.addMarker(
                     MarkerOptions().position(
                         LatLng(
-                            viewModel.selectedPoi?.latitude?.toDouble() ?: 0.0,
-                            viewModel.selectedPoi?.longitude?.toDouble() ?: 0.0
+                            mPoi.latitude?.toDouble() ?: 0.0,
+                            mPoi.longitude?.toDouble() ?: 0.0
                         )
                     )
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
@@ -251,8 +251,8 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
             map?.moveCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     LatLng(
-                        viewModel.selectedPoi?.latitude?.toDouble() ?: 0.0,
-                        viewModel.selectedPoi?.longitude?.toDouble() ?: 0.0
+                        mPoi.latitude?.toDouble() ?: 0.0,
+                        mPoi.longitude?.toDouble() ?: 0.0
                     ), zoomLevel
                 )
             )
