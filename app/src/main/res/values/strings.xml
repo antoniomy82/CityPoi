@@ -24,7 +24,7 @@
     <string name="btn_start">COMENZAR</string>
     <string name="splash_text_sevilla">Madrid</string>
     <string name="splash_text_madrid">Málaga</string>
-    <string name="splash_text_barcelona">Ceuta</string>
+    <string name="splash_text_barcelona">Sevilla,Ceuta</string>
 
     <string name="bottom_sheet_tittle">"AVISO ALMACENAMIENTO"</string>
     <string name="bottom_sheet_tittle_delete">"AVISO BORRADO"</string>

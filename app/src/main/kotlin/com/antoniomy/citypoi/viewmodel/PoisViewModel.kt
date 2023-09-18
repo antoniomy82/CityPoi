@@ -1,6 +1,8 @@
 package com.antoniomy.citypoi.viewmodel
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.ViewModel
@@ -9,7 +11,11 @@ import com.antoniomy.domain.datasource.local.LocalRepository
 import com.antoniomy.domain.datasource.remote.RemoteRepository
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Poi
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,6 +37,8 @@ class PoisViewModel @Inject constructor(
     var toolbarTitle= ""
     var poisCount : String = "0"
 
+    var imageFlow = MutableStateFlow<Bitmap?>(null)
+    var iconFlow = MutableStateFlow<Bitmap?>(null)
 
     var retrieveDistrict: District? = null
     var selectedPoi: Poi? = null
@@ -66,6 +74,23 @@ class PoisViewModel @Inject constructor(
             readPoiObserver.value = it
         }
     }
+
+    fun renderImage(context: Context , mImageFlow :MutableStateFlow<Bitmap?> , url:String)
+    {
+        viewModelScope.launch(Dispatchers.IO) {
+            Glide.with(context)
+                .asBitmap()
+                .load(url)
+                .into(object : CustomTarget<Bitmap>(){
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                       mImageFlow.value = resource
+                    }
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                })
+        }
+    }
+
+
 
     sealed class LoaderEvent {
         data object ShowLoading : LoaderEvent()

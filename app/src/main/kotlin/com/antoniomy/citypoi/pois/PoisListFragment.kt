@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
-import com.antoniomy.citypoi.common.CustomProgressDialog
 import com.antoniomy.citypoi.common.collectInLifeCycle
 import com.antoniomy.citypoi.databinding.FragmentPoiListBinding
 import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
@@ -23,7 +22,6 @@ class PoisListFragment(
 ) : Fragment() {
 
     private lateinit var fragmentPoiListBinding: FragmentPoiListBinding
-    private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
     private var citiesNavigation = CitiesNavigationImpl() //TODO
 
     override fun onCreateView(
@@ -88,13 +86,6 @@ class PoisListFragment(
                 fragmentPoiListBinding.poisVM = poisViewModel
             }
         }
-        //ShowLoader
-        poisViewModel.loaderEvent.collectInLifeCycle(viewLifecycleOwner) { onLoaderEvent(it) }
-    }
-
-    private fun onLoaderEvent(event: PoisViewModel.LoaderEvent) = when (event) {
-        PoisViewModel.LoaderEvent.ShowLoading -> progressDialog.start("Cargando, por favor espere")
-        PoisViewModel.LoaderEvent.HideLoading -> progressDialog.stop()
     }
 
 

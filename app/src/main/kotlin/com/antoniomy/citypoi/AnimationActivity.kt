@@ -1,6 +1,5 @@
 package com.antoniomy.citypoi
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,8 +8,7 @@ import android.view.animation.Animation
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
-@SuppressLint("CustomSplashScreen")
-class SplashActivity : AppCompatActivity() {
+class AnimationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -32,7 +30,7 @@ class SplashActivity : AppCompatActivity() {
             })
 
         findViewById<Button>(R.id.btn_start).setOnClickListener {
-            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+            startActivity(Intent(this@AnimationActivity, MainActivity::class.java))
             finish()
         }
     }

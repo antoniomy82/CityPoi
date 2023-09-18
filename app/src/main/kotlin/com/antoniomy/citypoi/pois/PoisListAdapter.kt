@@ -1,7 +1,5 @@
 package com.antoniomy.citypoi.pois
 
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -39,13 +37,13 @@ class PoisListAdapter(
         holder.adapterPoisDistrictListBinding.root.setOnClickListener {
             poisVm.popUpDirection = PoisViewModel.DIRECTION.GO_TO_LIST
 
-            poisVm.loaderEvent.value = PoisViewModel.LoaderEvent.ShowLoading
+            //poisVm.loaderEvent.value = PoisViewModel.LoaderEvent.ShowLoading
 
-            Handler(Looper.getMainLooper()).postDelayed({
-                poisVm.loaderEvent.value = PoisViewModel.LoaderEvent.HideLoading
+           // Handler(Looper.getMainLooper()).postDelayed({ }, 500)
+
                 mDistrict.pois?.get(position)?.let { it1 -> DetailFragment(it1, poisVm) }
                     ?.let { it2 -> fm.replaceFragment(it2, DetailFragment.POI_ID) }
-            }, 500)
+
 
         }
 

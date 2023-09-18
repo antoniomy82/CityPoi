@@ -37,29 +37,23 @@ class MapFragment(private val poisVM: PoisViewModel) : Fragment(), OnMapReadyCal
         savedInstanceState: Bundle?
     ): View? {
 
-        fragmentMapsBinding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false)
+        fragmentMapsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false)
         return fragmentMapsBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         savedInstanceState?.let { mapsBundle = it }
-        fragmentMapsBinding?.poisVM = poisVM
         setUi()
         loadMap()
         mapRefresh()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-    }
-
     private fun mapRefresh(){
         Handler(Looper.getMainLooper()).postDelayed({
+            map?.let { onMapReady(it) }
             fragmentMapsBinding?.map?.getMapAsync(this)
-        }, 500)
+        }, 100)
     }
 
     private fun setUi() {
@@ -67,10 +61,8 @@ class MapFragment(private val poisVM: PoisViewModel) : Fragment(), OnMapReadyCal
         headerTitle.text = poisVM.toolbarTitle
 
         fragmentMapsBinding?.headerId?.headerBack?.setOnClickListener { citiesNavigation.goToList(poisVM,  parentFragmentManager)}
-
-        fragmentMapsBinding?.listLayout?.setOnClickListener {
-            citiesNavigation.goToList(poisVM,  parentFragmentManager)
-        }
+        fragmentMapsBinding?.listLayout?.setOnClickListener { citiesNavigation.goToList(poisVM,  parentFragmentManager) }
+        fragmentMapsBinding?.poisVM = poisVM
     }
 
     private fun loadMap() {
@@ -80,7 +72,6 @@ class MapFragment(private val poisVM: PoisViewModel) : Fragment(), OnMapReadyCal
         }
         map?.let { onMapReady(it) }
         fragmentMapsBinding?.map?.getMapAsync(this)
-
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -97,6 +88,7 @@ class MapFragment(private val poisVM: PoisViewModel) : Fragment(), OnMapReadyCal
                 poisVM.retrieveDistrict?.pois?.get(i)?.longitude?.toDouble() ?: 0.0
             )
             val mMarker: Marker? = map?.addMarker(MarkerOptions().position(mLatLng))
+
             context?.let {
                 mMarker?.loadIcon(
                     it,

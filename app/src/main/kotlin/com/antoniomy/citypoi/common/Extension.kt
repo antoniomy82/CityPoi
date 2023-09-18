@@ -25,10 +25,12 @@ import kotlinx.coroutines.launch
 
 
 fun FragmentManager.replaceFragment(fragment: Fragment, tag: String) {
-    try { this.commit { replace(R.id.frame_container, fragment, tag) } }
-    catch (e: Exception) { Log.e("__replaceFragment", e.toString()) }
+    try {
+        this.commit { replace(R.id.frame_container, fragment, tag) }
+    } catch (e: Exception) {
+        Log.e("__replaceFragment", e.toString())
+    }
 }
-
 
 
 fun Marker.loadIcon(context: Context, url: String?) {
@@ -36,9 +38,7 @@ fun Marker.loadIcon(context: Context, url: String?) {
     Glide.with(context)
         .asBitmap()
         .load(url)
-        .error(R.drawable.location_icon) // to show a default icon in case of any errors
         .listener(object : RequestListener<Bitmap> {
-
 
             override fun onResourceReady(
                 resource: Bitmap?,
@@ -47,12 +47,13 @@ fun Marker.loadIcon(context: Context, url: String?) {
                 dataSource: DataSource?,
                 isFirstResource: Boolean
             ): Boolean {
-                return resource?.let {
-                    BitmapDescriptorFactory.fromBitmap(it)
-                }?.let {
-                    setIcon(it)
+                return try {
+                    resource?.let { setIcon(BitmapDescriptorFactory.fromBitmap(it)) }
                     true
-                } ?: false
+                } catch (e: Exception) {
+                    Log.e("GlideError", e.toString())
+                    false
+                }
             }
 
             override fun onLoadFailed(
@@ -65,6 +66,11 @@ fun Marker.loadIcon(context: Context, url: String?) {
             }
         }).submit()
 }
+
+
+fun Long.getTimeResult() = "${(this / 1000 / 60).toString().padStart(2, '0')}:" +
+        "${(this / 1000 % 60).toString().padStart(2, '0')} "
+
 
 /** A sample use: viewModel.event.onEach(::renderEvent).launchInLifeCycle(viewLifecycleOwner) */
 inline fun <reified T> Flow<T>.collectInLifeCycle(
