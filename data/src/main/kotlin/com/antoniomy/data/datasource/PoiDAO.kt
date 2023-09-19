@@ -1,4 +1,4 @@
-package com.antoniomy.data.repository
+package com.antoniomy.data.datasource
 
 import androidx.room.Dao
 import androidx.room.Insert

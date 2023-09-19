@@ -1,10 +1,10 @@
-package com.antoniomy.domain.datasource.remote
+package com.antoniomy.domain.repository.remote
 
 import android.content.Context
 import android.util.Log
-import com.antoniomy.data.repository.RemoteJson
-import com.antoniomy.data.repository.RemoteRetrofit
-import com.antoniomy.data.repository.urlCities
+import com.antoniomy.data.datasource.RemoteJson
+import com.antoniomy.data.datasource.RemoteRetrofit
+import com.antoniomy.data.datasource.urlCities
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.toDomain
 import kotlinx.coroutines.CoroutineScope

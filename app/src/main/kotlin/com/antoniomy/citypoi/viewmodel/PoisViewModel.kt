@@ -8,10 +8,10 @@ import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.antoniomy.domain.datasource.local.LocalRepository
-import com.antoniomy.domain.datasource.remote.RemoteRepository
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Poi
+import com.antoniomy.domain.repository.local.LocalRepository
+import com.antoniomy.domain.repository.remote.RemoteRepository
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -30,7 +30,7 @@ class PoisViewModel @Inject constructor(
 
     var fetchDistricts = MutableStateFlow(District())
     var fetchPois = MutableStateFlow(listOf<Poi>())
-    val loaderEvent = MutableStateFlow<LoaderEvent>(LoaderEvent.ShowLoading)
+    var loaderEvent = MutableStateFlow<LoaderEvent>(LoaderEvent.ShowLoading)
     var readPoiObserver = MutableStateFlow(Poi())
 
     //Toolbar values
@@ -59,8 +59,7 @@ class PoisViewModel @Inject constructor(
         }
     }
 
-    fun getSavedPois() =
-        viewModelScope.launch { localRepository.fetchPoiList().collect { fetchPois.value = it } }
+    fun getSavedPois() = viewModelScope.launch { localRepository.fetchPoiList().collect { fetchPois.value = it } }
 
     //Local DB
     fun insertLocalPoi(mPoi: Poi) = localRepository.insertPoi(mPoi)
@@ -73,8 +72,7 @@ class PoisViewModel @Inject constructor(
         }
     }
 
-    fun renderImage(context: Context , mImageFlow :MutableStateFlow<Bitmap?> , url:String)
-    {
+    fun loadImageFromUrl(context: Context, mImageFlow :MutableStateFlow<Bitmap?>, url:String)=
         viewModelScope.launch(Dispatchers.IO) {
             Glide.with(context)
                 .asBitmap()
@@ -86,7 +84,6 @@ class PoisViewModel @Inject constructor(
                     override fun onLoadCleared(placeholder: Drawable?) {}
                 })
         }
-    }
 
 
     fun loadMediaPlayer(audioUri: Uri, context: Context) =
@@ -94,11 +91,10 @@ class PoisViewModel @Inject constructor(
             mediaPlayer.value = MediaPlayer.create(context, audioUri)
         }
 
-
-    sealed class LoaderEvent {
-        data object ShowLoading : LoaderEvent()
-        data object HideLoading : LoaderEvent()
-    }
-
     enum class DIRECTION { GO_TO_LIST, GO_TO_MAP }
+}
+
+sealed class LoaderEvent {
+    data object ShowLoading : LoaderEvent()
+    data object HideLoading : LoaderEvent()
 }

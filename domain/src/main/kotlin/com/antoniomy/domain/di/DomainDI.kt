@@ -2,15 +2,15 @@ package com.antoniomy.domain.di
 
 import android.content.Context
 import androidx.room.Room
-import com.antoniomy.data.repository.PoiDAO
-import com.antoniomy.data.repository.RemoteJson
-import com.antoniomy.data.repository.RemoteJsonImpl
-import com.antoniomy.data.repository.RemoteRetrofit
-import com.antoniomy.domain.datasource.local.LocalRepository
-import com.antoniomy.domain.datasource.local.LocalRepositoryImpl
-import com.antoniomy.domain.datasource.local.PoiDB
-import com.antoniomy.domain.datasource.remote.RemoteRepository
-import com.antoniomy.domain.datasource.remote.RemoteRepositoryImpl
+import com.antoniomy.data.datasource.PoiDAO
+import com.antoniomy.data.datasource.RemoteJson
+import com.antoniomy.data.datasource.RemoteJsonImpl
+import com.antoniomy.data.datasource.RemoteRetrofit
+import com.antoniomy.domain.repository.local.LocalRepository
+import com.antoniomy.domain.repository.local.LocalRepositoryImpl
+import com.antoniomy.domain.repository.local.PoiDB
+import com.antoniomy.domain.repository.remote.RemoteRepository
+import com.antoniomy.domain.repository.remote.RemoteRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.antoniomy.domain.datasource.remote
+package com.antoniomy.domain.repository.remote
 
 import android.content.Context
 import com.antoniomy.domain.model.District

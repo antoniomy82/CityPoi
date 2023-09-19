@@ -119,7 +119,10 @@ class CarouselFragment(private val viewModel: PoisViewModel) : Fragment() {
 
     private fun setDotsListener() {
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                val mPosition =  "${(position + 1)} / ${viewPager.adapter?.count.toString()}"
+                binding.carouselCounter.text = mPosition
+            }
 
             override fun onPageSelected(position: Int) {
                 for (i in 0 until dotsCount) {
@@ -127,7 +130,6 @@ class CarouselFragment(private val viewModel: PoisViewModel) : Fragment() {
                 }
                 dots[position]?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.carousel_active_dot))
                 SELECTED_SLIDE = if (position < dotsCount) position else position - 1
-
             }
 
             override fun onPageScrollStateChanged(state: Int) { //Scroll to top when start

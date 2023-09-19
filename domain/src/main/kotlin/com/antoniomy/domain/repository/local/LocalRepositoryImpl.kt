@@ -1,8 +1,8 @@
-package com.antoniomy.domain.datasource.local
+package com.antoniomy.domain.repository.local
 
 import android.util.Log
+import com.antoniomy.data.datasource.PoiDAO
 import com.antoniomy.data.model.PoisDto
-import com.antoniomy.data.repository.PoiDAO
 import com.antoniomy.domain.model.Poi
 import com.antoniomy.domain.model.toData
 import com.antoniomy.domain.model.toDomain

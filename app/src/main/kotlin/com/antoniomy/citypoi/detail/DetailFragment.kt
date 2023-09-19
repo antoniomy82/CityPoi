@@ -19,6 +19,7 @@ import com.antoniomy.citypoi.common.countDown
 import com.antoniomy.citypoi.common.getTimeResult
 import com.antoniomy.citypoi.databinding.PopUpPoisDetailBinding
 import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
+import com.antoniomy.citypoi.viewmodel.LoaderEvent
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.Poi
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -93,15 +94,15 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
             actualTime = it
             popUpPoisDetailBinding?.frg = updateFrg()
             Handler(Looper.getMainLooper()).postDelayed({ context?.let {
-                viewModel.loaderEvent.value = PoisViewModel.LoaderEvent.HideLoading
-            } }, 600)
+                viewModel.loaderEvent.value = LoaderEvent.HideLoading
+            } }, 1500)
         }
     }
 
-    private fun onLoaderEvent(event: PoisViewModel.LoaderEvent) = when (event) {
-        PoisViewModel.LoaderEvent.ShowLoading -> progressDialog.start(getString(R.string.loader_text))
-        PoisViewModel.LoaderEvent.HideLoading -> {
-            Handler(Looper.getMainLooper()).postDelayed({ context?.let { progressDialog.stop() } }, 50)
+    private fun onLoaderEvent(event: LoaderEvent) = when (event) {
+        LoaderEvent.ShowLoading -> progressDialog.start(getString(R.string.loader_text))
+        LoaderEvent.HideLoading -> {
+             progressDialog.stop()
              popUpPoisDetailBinding?.soundLayout?.visibility = View.VISIBLE
         }
     }
@@ -160,11 +161,11 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
         popUpPoisDetailBinding?.titlePopup?.text = mPoi.name
         popUpPoisDetailBinding?.streetPopup?.text = mPoi.description
         popUpPoisDetailBinding?.let { loadMapPopUp(it) }
-        viewModel.loaderEvent.value = PoisViewModel.LoaderEvent.ShowLoading
+        viewModel.loaderEvent.value = LoaderEvent.ShowLoading
         myUri = Uri.parse(mPoi.audio)
 
-        context?.let { viewModel.renderImage(it, viewModel.imageFlow, mPoi.image.toString()) }
-        context?.let { viewModel.renderImage(it, viewModel.iconFlow, mPoi.categoryIcon.toString()) }
+        context?.let { viewModel.loadImageFromUrl(it, viewModel.imageFlow, mPoi.image.toString()) }
+        context?.let { viewModel.loadImageFromUrl(it, viewModel.iconFlow, mPoi.categoryIcon.toString()) }
         context?.let { context -> myUri?.let { uri -> viewModel.loadMediaPlayer(uri, context) } }
     }
 
@@ -202,7 +203,6 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
         buttonStop()
     }
 
-    //Map into PopUp
     private fun loadMapPopUp(popUpBinding: PopUpPoisDetailBinding) {
         popUpBinding.mapPopup.apply {
             onCreate(mainBundle)
@@ -224,8 +224,7 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
                             mPoi.latitude?.toDouble() ?: 0.0,
                             mPoi.longitude?.toDouble() ?: 0.0
                         )
-                    )
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    ).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                 )
             }
             map?.moveCamera(

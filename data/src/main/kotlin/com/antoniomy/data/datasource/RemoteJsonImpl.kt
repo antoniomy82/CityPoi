@@ -1,4 +1,4 @@
-package com.antoniomy.data.repository
+package com.antoniomy.data.datasource
 
 import android.content.Context
 import com.antoniomy.data.R

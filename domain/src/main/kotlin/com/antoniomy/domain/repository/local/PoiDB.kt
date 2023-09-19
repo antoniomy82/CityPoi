@@ -1,9 +1,9 @@
-package com.antoniomy.domain.datasource.local
+package com.antoniomy.domain.repository.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.antoniomy.data.datasource.PoiDAO
 import com.antoniomy.data.model.PoisDto
-import com.antoniomy.data.repository.PoiDAO
 
 @Database(entities = [PoisDto::class], version = 1, exportSchema = false)
 abstract class PoiDB : RoomDatabase() {
