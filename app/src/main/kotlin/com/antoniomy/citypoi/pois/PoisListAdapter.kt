@@ -37,14 +37,8 @@ class PoisListAdapter(
         holder.adapterPoisDistrictListBinding.root.setOnClickListener {
             poisVm.popUpDirection = PoisViewModel.DIRECTION.GO_TO_LIST
 
-            //poisVm.loaderEvent.value = PoisViewModel.LoaderEvent.ShowLoading
-
-           // Handler(Looper.getMainLooper()).postDelayed({ }, 500)
-
-                mDistrict.pois?.get(position)?.let { it1 -> DetailFragment(it1, poisVm) }
-                    ?.let { it2 -> fm.replaceFragment(it2, DetailFragment.POI_ID) }
-
-
+            mDistrict.pois?.get(position)?.let { it1 -> DetailFragment(it1, poisVm) }
+                ?.let { it2 -> fm.replaceFragment(it2, DetailFragment.POI_ID) }
         }
 
         //Set image
@@ -54,7 +48,6 @@ class PoisListAdapter(
         if (mDistrict.pois?.get(position)?.categoryIcon != null) Glide.with(holder.itemView)
             .load(mDistrict.pois?.get(position)?.categoryIcon)
             .into(holder.adapterPoisDistrictListBinding.imageCategory)
-
 
     }
 

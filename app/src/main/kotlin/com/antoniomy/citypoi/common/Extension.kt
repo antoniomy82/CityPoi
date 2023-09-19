@@ -3,11 +3,13 @@ package com.antoniomy.citypoi.common
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.CountDownTimer
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.antoniomy.citypoi.R
@@ -71,6 +73,19 @@ fun Marker.loadIcon(context: Context, url: String?) {
 fun Long.getTimeResult() = "${(this / 1000 / 60).toString().padStart(2, '0')}:" +
         "${(this / 1000 % 60).toString().padStart(2, '0')} "
 
+
+fun Long.countDown(observer : MutableLiveData<String>, action: ()->Unit): CountDownTimer {
+    val timer = object : CountDownTimer(this, 1000) {
+
+        override fun onTick(millisUntilFinished: Long) {
+            observer.value = millisUntilFinished.getTimeResult()
+        }
+
+        override fun onFinish() = action()
+    }
+    timer.start()
+    return timer
+}
 
 /** A sample use: viewModel.event.onEach(::renderEvent).launchInLifeCycle(viewLifecycleOwner) */
 inline fun <reified T> Flow<T>.collectInLifeCycle(

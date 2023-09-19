@@ -1,6 +1,5 @@
 package com.antoniomy.citypoi.detail
 
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -9,7 +8,6 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
@@ -17,6 +15,7 @@ import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.common.CustomBottomSheet
 import com.antoniomy.citypoi.common.CustomProgressDialog
 import com.antoniomy.citypoi.common.collectInLifeCycle
+import com.antoniomy.citypoi.common.countDown
 import com.antoniomy.citypoi.common.getTimeResult
 import com.antoniomy.citypoi.databinding.PopUpPoisDetailBinding
 import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
@@ -31,7 +30,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
-
 class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel) : Fragment(), OnMapReadyCallback {
 
     private var popUpPoisDetailBinding: PopUpPoisDetailBinding? = null
@@ -39,16 +37,13 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
     private var citiesNavigation = CitiesNavigationImpl() //TODO
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
 
-    //Media player
-
-    private var totalDuration by Delegates.notNull<Long>()
-    private var mediaPlayer: MediaPlayer? = null
-    private var myUri: Uri? = null
-    private var launchTimer: CountDownTimer? = null
-
-    private var timeValue: String = ""
     private var map: GoogleMap? = null
     private var mainBundle: Bundle? = null
+
+    private var launchTimer: CountDownTimer? = null
+    private var totalDuration by Delegates.notNull<Long>()
+    private var myUri: Uri? = null
+
     var actualTime = ""
     var aboutPoi = mPoi.city +" , "+ mPoi.district
     override fun onCreateView(
@@ -79,26 +74,36 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
 
         viewModel.viewModelScope.launch { viewModel.readPoi(mPoi.name) }
 
-        viewModel.imageFlow.collectInLifeCycle(viewLifecycleOwner) {
-            popUpPoisDetailBinding?.photoPopup?.setImageBitmap(it)
+        viewModel.imageFlow.collectInLifeCycle(viewLifecycleOwner) {bitmap->
+            popUpPoisDetailBinding?.photoPopup?.setImageBitmap(bitmap)
         }
 
-        viewModel.iconFlow.collectInLifeCycle(viewLifecycleOwner) {
-            popUpPoisDetailBinding?.iconPopup?.setImageBitmap(it)
-            Handler(Looper.getMainLooper()).postDelayed({ setMedia() }, 200)
+        viewModel.iconFlow.collectInLifeCycle(viewLifecycleOwner) {bitmap->
+            popUpPoisDetailBinding?.iconPopup?.setImageBitmap(bitmap)
         }
 
         viewModel.loaderEvent.collectInLifeCycle(viewLifecycleOwner) { onLoaderEvent(it) }
 
+        viewModel.mediaPlayer.collectInLifeCycle(viewLifecycleOwner){mediaPlayer->
+            totalDuration = mediaPlayer.duration.toLong()
+            viewModel.remainingTime.value = totalDuration.getTimeResult()
+        }
+
         viewModel.remainingTime.observe(viewLifecycleOwner){
             actualTime = it
             popUpPoisDetailBinding?.frg = updateFrg()
+            Handler(Looper.getMainLooper()).postDelayed({ context?.let {
+                viewModel.loaderEvent.value = PoisViewModel.LoaderEvent.HideLoading
+            } }, 600)
         }
     }
 
     private fun onLoaderEvent(event: PoisViewModel.LoaderEvent) = when (event) {
-        PoisViewModel.LoaderEvent.ShowLoading -> progressDialog.start("Cargando, por favor espere")
-        PoisViewModel.LoaderEvent.HideLoading -> progressDialog.stop()
+        PoisViewModel.LoaderEvent.ShowLoading -> progressDialog.start(getString(R.string.loader_text))
+        PoisViewModel.LoaderEvent.HideLoading -> {
+            Handler(Looper.getMainLooper()).postDelayed({ context?.let { progressDialog.stop() } }, 50)
+             popUpPoisDetailBinding?.soundLayout?.visibility = View.VISIBLE
+        }
     }
 
 
@@ -151,46 +156,23 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
         cancelBtn().setOnClickListener { closeBottomSheet() }
     }
 
-
-    //Set the POI detail in a popup
     private fun setUi() {
         popUpPoisDetailBinding?.titlePopup?.text = mPoi.name
         popUpPoisDetailBinding?.streetPopup?.text = mPoi.description
         popUpPoisDetailBinding?.let { loadMapPopUp(it) }
         viewModel.loaderEvent.value = PoisViewModel.LoaderEvent.ShowLoading
+        myUri = Uri.parse(mPoi.audio)
 
         context?.let { viewModel.renderImage(it, viewModel.imageFlow, mPoi.image.toString()) }
         context?.let { viewModel.renderImage(it, viewModel.iconFlow, mPoi.categoryIcon.toString()) }
-    }
-
-    private fun setMedia() {
-        myUri = Uri.parse(mPoi.audio) // initialize Uri here
-        mediaPlayer = MediaPlayer.create(context, myUri)
-        totalDuration = mediaPlayer?.duration?.toLong() ?: 0
-        timeValue = totalDuration.getTimeResult()
-        viewModel.remainingTime.value = timeValue
-        if (timeValue != "null") popUpPoisDetailBinding?.soundLayout?.visibility = View.VISIBLE
-        viewModel.loaderEvent.value = PoisViewModel.LoaderEvent.HideLoading
+        context?.let { context -> myUri?.let { uri -> viewModel.loadMediaPlayer(uri, context) } }
     }
 
     private fun updateFrg() = this
 
-    private fun Long.mediaProgress(): CountDownTimer {
-        val timer = object : CountDownTimer(this, 1000) {
-
-            override fun onTick(millisUntilFinished: Long) {
-                viewModel.remainingTime.value = millisUntilFinished.getTimeResult()
-            }
-
-            override fun onFinish() = buttonStop()
-        }
-        timer.start()
-        return timer
-    }
-
     fun buttonPlay() {
-        launchTimer = totalDuration.mediaProgress()
-        mediaPlayer?.start()
+        launchTimer = totalDuration.countDown(viewModel.remainingTime) { buttonStop() }
+        viewModel.mediaPlayer.value.start()
 
         popUpPoisDetailBinding?.apply {
             tvPass.visibility = View.VISIBLE
@@ -200,12 +182,11 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
     }
 
     fun buttonStop() {
-        mediaPlayer?.stop()
-        mediaPlayer = MediaPlayer.create(popUpPoisDetailBinding?.root?.context, myUri)
+        viewModel.mediaPlayer.value.stop()
+        myUri?.let { context?.let { it1 -> viewModel.loadMediaPlayer(it, it1) } }
         launchTimer?.cancel()
 
         popUpPoisDetailBinding?.apply {
-            tvPass.text = timeValue
             playBtn.visibility = View.VISIBLE
             stopBtn.visibility = View.GONE
             popUpPoisDetailBinding?.frg = updateFrg()
@@ -214,7 +195,6 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
 
 
     fun closePopUp() {
-        Toast.makeText(context, "Volviendo a POIs...", Toast.LENGTH_SHORT).show()
         when (viewModel.popUpDirection) {
             PoisViewModel.DIRECTION.GO_TO_LIST -> citiesNavigation.goToList(viewModel, parentFragmentManager)
             PoisViewModel.DIRECTION.GO_TO_MAP -> citiesNavigation.goToMap(viewModel, parentFragmentManager)

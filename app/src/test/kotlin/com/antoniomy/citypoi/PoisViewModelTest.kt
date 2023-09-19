@@ -6,6 +6,8 @@ import com.antoniomy.domain.datasource.local.LocalRepository
 import com.antoniomy.domain.datasource.remote.RemoteRepository
 import com.antoniomy.domain.model.District
 import com.antoniomy.domain.model.Poi
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
@@ -23,64 +25,40 @@ class PoisViewModelTest {
     private val mContext: Context = mockk()
 
     @Test
-    fun `When insert point of interest on local db correctly then insertPoi return true`() =
-        runTest {
+    fun `When read the name of point of interest on local db and no exists in the database then the value of city return null`() =
+       runTest {
             //Given
-            every { localRepository.insertPoi(mPoi) } returns true
+            val mName = "mPoi"
+
+            coEvery { localRepository.readPoi(mName).value.city } returns null
 
             //When
-            val insertPoi = localRepository.insertPoi(mPoi)
+            val insertPoi = localRepository.readPoi(mName)
 
             //Then
-            Assert.assertTrue(insertPoi)
+            Assert.assertEquals(insertPoi.value.city,null)
 
-            verify { localRepository.insertPoi(mPoi) }
+            coVerify { localRepository.readPoi(mName) }
         }
 
     @Test
-    fun `When insert point of interest on local db wrongly then insertPoi return false`() =
+    fun `When read the name of point of interest on local db and exists in the database then the value of city return name`() =
         runTest {
             //Given
-            every { localRepository.insertPoi(mPoi) } returns false
+            val mName = "mPoi"
+            val city = "Madrid"
+
+            coEvery { localRepository.readPoi(mName).value.city } returns city
 
             //When
-            val insertPoi = localRepository.insertPoi(mPoi)
+            val insertPoi = localRepository.readPoi(mName)
 
             //Then
-            Assert.assertFalse(insertPoi)
+            Assert.assertEquals(insertPoi.value.city,city)
 
-            verify { localRepository.insertPoi(mPoi) }
+            coVerify { localRepository.readPoi(mName) }
         }
 
-    @Test
-    fun `When delete point of interest on local db correctly then deletePoi return true`() =
-        runTest {
-            //Given
-            every { localRepository.deletePoi("NAME") } returns true
-
-            //When
-            val deletePoi = localRepository.deletePoi("NAME")
-
-            //Then
-            Assert.assertTrue(deletePoi)
-
-            verify { localRepository.deletePoi("NAME") }
-        }
-
-    @Test
-    fun `When delete point of interest on local db wrongly then deletePoi return false`() =
-        runTest {
-            //Given
-            every { localRepository.deletePoi("NAME") } returns false
-
-            //When
-            val deletePoi = localRepository.deletePoi("NAME")
-
-            //Then
-            Assert.assertFalse(deletePoi)
-
-            verify { localRepository.deletePoi("NAME") }
-        }
 
     @Test
     fun `When call to fetchPoiList then retrieve all point of interest stored on local db`() =

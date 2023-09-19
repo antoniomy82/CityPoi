@@ -15,34 +15,17 @@ import javax.inject.Inject
 
 class LocalRepositoryImpl @Inject constructor(private val poiDAO: PoiDAO) : LocalRepository {
 
-    override fun insertPoi(poi: Poi): Boolean {
-        var result = false
+    override fun insertPoi(poi: Poi){
         CoroutineScope(Dispatchers.IO).launch {
-            result = try {
-                poiDAO.insertPoi(poi.toData())
-                Log.d("INSERTED-->", poi.toData().toString())
-                true
-            } catch (e: Exception) {
-                Log.e("__insertError", e.toString())
-                false
-            }
-        }
-        return result
+         try { poiDAO.insertPoi(poi.toData())
+            } catch (e: Exception) { Log.e("__insertError", e.toString()) } }
     }
 
-    override fun deletePoi(name: String): Boolean {
-        var result = false
-
+    override fun deletePoi(name: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            result = try {
-                poiDAO.deletePoi(name)
-                true
-            } catch (e: Exception) {
-                Log.e("__deleteError", e.toString())
-                false
-            }
+            try { poiDAO.deletePoi(name)
+            } catch (e: Exception) { Log.e("__deleteError", e.toString()) }
         }
-        return result
     }
 
     override fun fetchPoiList(): MutableStateFlow<List<Poi>> {

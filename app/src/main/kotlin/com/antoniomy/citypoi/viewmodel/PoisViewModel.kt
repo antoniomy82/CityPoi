@@ -3,8 +3,8 @@ package com.antoniomy.citypoi.viewmodel
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.os.Handler
-import android.os.Looper
+import android.media.MediaPlayer
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -44,7 +44,9 @@ class PoisViewModel @Inject constructor(
     var retrieveDistrict: District? = null
     var popUpDirection: DIRECTION = DIRECTION.GO_TO_LIST
 
+    //Media counter
     val remainingTime = MutableLiveData<String>()
+    var mediaPlayer= MutableStateFlow(MediaPlayer())
 
 /*
     fun getDistrict(urlId: String) = viewModelScope.launch {
@@ -54,9 +56,6 @@ class PoisViewModel @Inject constructor(
     fun getDistrictMocked(context: Context) = viewModelScope.launch {
         remoteRepository.getMockedList(context).collect {
             fetchDistricts.value = it
-            Handler(Looper.getMainLooper()).postDelayed({
-                loaderEvent.value = LoaderEvent.HideLoading
-            }, 1000)
         }
     }
 
@@ -64,9 +63,9 @@ class PoisViewModel @Inject constructor(
         viewModelScope.launch { localRepository.fetchPoiList().collect { fetchPois.value = it } }
 
     //Local DB
-    fun insertLocalPoi(mPoi: Poi): Boolean = localRepository.insertPoi(mPoi)
+    fun insertLocalPoi(mPoi: Poi) = localRepository.insertPoi(mPoi)
 
-    fun deleteLocalPoi(name: String): Boolean = localRepository.deletePoi(name)
+    fun deleteLocalPoi(name: String) = localRepository.deletePoi(name)
 
     suspend fun readPoi(name: String) = viewModelScope.launch {
         localRepository.readPoi(name).collect {
@@ -89,6 +88,11 @@ class PoisViewModel @Inject constructor(
         }
     }
 
+
+    fun loadMediaPlayer(audioUri: Uri, context: Context) =
+        viewModelScope.launch(Dispatchers.IO) {
+            mediaPlayer.value = MediaPlayer.create(context, audioUri)
+        }
 
 
     sealed class LoaderEvent {
