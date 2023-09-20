@@ -17,8 +17,10 @@ data class PoisDto(
     @ColumnInfo(name = "CITY") var city: String? = null,
     @ColumnInfo(name = "DISTRICT") var district: String? = null,
 
-    @Ignore var image: MultimediaDto? = null, //URL
-    @Ignore var category: CategoryDto? = null, //ICON Y MARKER
+
+){
+    @Ignore var image: MultimediaDto? = null //URL
+    @Ignore var category: CategoryDto? = null //ICON Y MARKER
     @Ignore var audio: MultimediaDto? = null  //URL
-)
+}
 

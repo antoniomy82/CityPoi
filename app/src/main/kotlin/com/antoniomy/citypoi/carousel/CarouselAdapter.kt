@@ -1,6 +1,7 @@
 package com.antoniomy.citypoi.carousel
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,17 +14,19 @@ import androidx.viewpager.widget.ViewPager
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.common.replaceFragment
 import com.antoniomy.citypoi.detail.DetailFragment
+import com.antoniomy.citypoi.viewmodel.DIRECTION
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.Poi
 import com.bumptech.glide.Glide
 
 class CarouselAdapter(
     private val itemList: List<Poi>,
-    private val context: Context,
+    context: Context,
     private val viewModel: PoisViewModel
 ) : PagerAdapter() {
 
     override fun getCount() = itemList.size
+    private val mContext = (context as ContextWrapper).baseContext as AppCompatActivity //For hilt cast issue
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
         return view === `object`
@@ -31,7 +34,7 @@ class CarouselAdapter(
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val layoutInflater =
-            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view: View =
             layoutInflater.inflate(R.layout.carousel_options_view_item, container, false)
         val imageCarousel = (view.findViewById<View>(R.id.image_carousel_card) as ImageView)
@@ -43,7 +46,7 @@ class CarouselAdapter(
 
 
         if (itemList[position].image != null) itemList[position].image.let {
-            Glide.with(context).load(it).into(imageCarousel)
+            Glide.with(mContext).load(it).into(imageCarousel)
         }
         if (itemList[position].image == null) imageCarousel.visibility = View.GONE
 
@@ -51,7 +54,7 @@ class CarouselAdapter(
         title.contentDescription = itemList[position].name
         city.text = itemList[position].city
         district.text = itemList[position].district
-        itemList[position].categoryIcon.let { Glide.with(context).load(it).into(categoryIcn) }
+        itemList[position].categoryIcon.let { Glide.with(mContext).load(it).into(categoryIcn) }
 
         if (itemList[position].description == null) description.visibility = View.GONE
         else {
@@ -60,8 +63,8 @@ class CarouselAdapter(
         }
 
         view.setOnClickListener {
-            viewModel.popUpDirection = PoisViewModel.DIRECTION.GO_TO_LIST
-            (context as AppCompatActivity).supportFragmentManager.replaceFragment(DetailFragment(itemList[position], viewModel), DetailFragment.POI_ID)
+            viewModel.popUpDirection = DIRECTION.GO_TO_CAROUSEL
+            mContext.supportFragmentManager.replaceFragment(DetailFragment(itemList[position], viewModel), DetailFragment.POI_ID)
         }
 
         Log.d(

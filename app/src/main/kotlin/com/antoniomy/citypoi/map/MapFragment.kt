@@ -14,7 +14,8 @@ import androidx.fragment.app.Fragment
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.common.loadIcon
 import com.antoniomy.citypoi.databinding.FragmentMapBinding
-import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
+import com.antoniomy.citypoi.navigation.CitiesNavigation
+import com.antoniomy.citypoi.viewmodel.DIRECTION
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.Poi
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -24,13 +25,16 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MapFragment(private val poisVM: PoisViewModel) : Fragment(), OnMapReadyCallback {
 
     private var fragmentMapsBinding: FragmentMapBinding? = null
     private var mapsBundle: Bundle? = null
     private var map: GoogleMap? = null
-    private var citiesNavigation = CitiesNavigationImpl() //TODO
+    @Inject lateinit var citiesNavigation: CitiesNavigation
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -103,7 +107,7 @@ class MapFragment(private val poisVM: PoisViewModel) : Fragment(), OnMapReadyCal
             val mPoi: Poi? =
                 poisVM.retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
 
-            poisVM.popUpDirection = PoisViewModel.DIRECTION.GO_TO_MAP
+            poisVM.popUpDirection = DIRECTION.GO_TO_MAP
             citiesNavigation.goToDetail(
                 mPoi,
                 poisVM,

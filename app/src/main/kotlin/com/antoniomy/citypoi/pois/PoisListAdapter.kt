@@ -9,6 +9,7 @@ import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.common.replaceFragment
 import com.antoniomy.citypoi.databinding.AdapterPoisDistrictListBinding
 import com.antoniomy.citypoi.detail.DetailFragment
+import com.antoniomy.citypoi.viewmodel.DIRECTION
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.District
 import com.bumptech.glide.Glide
@@ -35,7 +36,7 @@ class PoisListAdapter(
         }
 
         holder.adapterPoisDistrictListBinding.root.setOnClickListener {
-            poisVm.popUpDirection = PoisViewModel.DIRECTION.GO_TO_LIST
+            poisVm.popUpDirection = DIRECTION.GO_TO_LIST
 
             mDistrict.pois?.get(position)?.let { it1 -> DetailFragment(it1, poisVm) }
                 ?.let { it2 -> fm.replaceFragment(it2, DetailFragment.POI_ID) }

@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace 'com.antoniomy.data'
-    compileSdkVersion project.mCompileSdkVersion.toInteger()
+    compileSdk project.mCompileSdkVersion.toInteger()
 
     buildFeatures {
         dataBinding = true

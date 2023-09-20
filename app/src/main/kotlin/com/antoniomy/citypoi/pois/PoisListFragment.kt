@@ -12,17 +12,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.common.collectInLifeCycle
 import com.antoniomy.citypoi.databinding.FragmentPoiListBinding
-import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
+import com.antoniomy.citypoi.navigation.CitiesNavigation
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.District
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.system.exitProcess
 
+@AndroidEntryPoint
 class PoisListFragment(
     private val poisViewModel: PoisViewModel
 ) : Fragment() {
 
     private lateinit var fragmentPoiListBinding: FragmentPoiListBinding
-    private var citiesNavigation = CitiesNavigationImpl() //TODO
+    @Inject lateinit var citiesNavigation: CitiesNavigation
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

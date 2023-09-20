@@ -12,13 +12,16 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.common.collectInLifeCycle
-import com.antoniomy.citypoi.common.replaceFragment
 import com.antoniomy.citypoi.databinding.FragmentCarouselBinding
-import com.antoniomy.citypoi.pois.PoisListFragment
+import com.antoniomy.citypoi.navigation.CitiesNavigation
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CarouselFragment(private val viewModel: PoisViewModel) : Fragment() {
 
+    @Inject lateinit var citiesNavigation : CitiesNavigation
     private lateinit var binding: FragmentCarouselBinding
     private lateinit var sliderDotsPanel: LinearLayout
     private lateinit var dots: Array<ImageView?>
@@ -66,7 +69,7 @@ class CarouselFragment(private val viewModel: PoisViewModel) : Fragment() {
 
         view?.findViewById<View>(R.id.headerBack)?.apply {
             setOnClickListener {
-               parentFragmentManager.replaceFragment(PoisListFragment(poisViewModel = viewModel), POI_ID)
+                citiesNavigation.goToList(viewModel, parentFragmentManager)
             }
         }
     }

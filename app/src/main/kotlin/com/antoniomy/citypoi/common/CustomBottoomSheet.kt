@@ -1,6 +1,7 @@
 package com.antoniomy.citypoi.common
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -18,12 +19,15 @@ class CustomBottomSheet(context: Context) {
 
     init {
         dialog = CustomSheet(context)
-        view = (context as AppCompatActivity).layoutInflater.inflate(
+
+        val mContext = (context as ContextWrapper).baseContext as AppCompatActivity
+
+        view = mContext.layoutInflater.inflate(
             R.layout.pop_up_error_warning,
             null
         )
         popUpErrorWarningBinding = DataBindingUtil.inflate(
-            context.layoutInflater,
+            mContext.layoutInflater,
             R.layout.pop_up_error_warning,
             view as ViewGroup,
             false

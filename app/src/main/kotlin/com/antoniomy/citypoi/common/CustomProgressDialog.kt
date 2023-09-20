@@ -2,15 +2,16 @@ package com.antoniomy.citypoi.common
 
 import android.app.Dialog
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.res.ResourcesCompat
 import com.antoniomy.citypoi.R
@@ -32,8 +33,7 @@ class CustomProgressDialog(context: Context) {
     }
 
     init {
-        val inflater = (context as AppCompatActivity).layoutInflater
-        val view = inflater.inflate(R.layout.progress_dialog_view, null)
+        val view = View.inflate((context as ContextWrapper).baseContext,R.layout.progress_dialog_view,null)
 
         cpTitle = view.findViewById(R.id.cp_title)
         cpCardView = view.findViewById(R.id.cp_cardview)

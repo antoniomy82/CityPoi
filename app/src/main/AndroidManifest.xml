@@ -11,7 +11,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/map_marker2"
         android:label="@string/app_name"
-        android:name=".common.PoiApp"
+        android:name=".di.PoiApp"
         android:roundIcon="@mipmap/map_marker2_round"
         android:supportsRtl="false"
         android:theme="@style/Theme.CityPoi"

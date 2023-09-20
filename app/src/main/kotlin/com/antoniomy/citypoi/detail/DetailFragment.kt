@@ -18,7 +18,8 @@ import com.antoniomy.citypoi.common.collectInLifeCycle
 import com.antoniomy.citypoi.common.countDown
 import com.antoniomy.citypoi.common.getTimeResult
 import com.antoniomy.citypoi.databinding.PopUpPoisDetailBinding
-import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
+import com.antoniomy.citypoi.navigation.CitiesNavigation
+import com.antoniomy.citypoi.viewmodel.DIRECTION
 import com.antoniomy.citypoi.viewmodel.LoaderEvent
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.Poi
@@ -28,14 +29,18 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
+@AndroidEntryPoint
 class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel) : Fragment(), OnMapReadyCallback {
 
     private var popUpPoisDetailBinding: PopUpPoisDetailBinding? = null
     private val bottomSheet by lazy { CustomBottomSheet(requireContext()) }
-    private var citiesNavigation = CitiesNavigationImpl() //TODO
+
+    @Inject lateinit var citiesNavigation : CitiesNavigation
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
 
     private var map: GoogleMap? = null
@@ -47,6 +52,7 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
 
     var actualTime = ""
     var aboutPoi = mPoi.city +" , "+ mPoi.district
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -197,8 +203,9 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
 
     fun closePopUp() {
         when (viewModel.popUpDirection) {
-            PoisViewModel.DIRECTION.GO_TO_LIST -> citiesNavigation.goToList(viewModel, parentFragmentManager)
-            PoisViewModel.DIRECTION.GO_TO_MAP -> citiesNavigation.goToMap(viewModel, parentFragmentManager)
+            DIRECTION.GO_TO_LIST -> citiesNavigation.goToList(viewModel, parentFragmentManager)
+            DIRECTION.GO_TO_MAP -> citiesNavigation.goToMap(viewModel, parentFragmentManager)
+            DIRECTION.GO_TO_CAROUSEL -> citiesNavigation.goToCarousel(viewModel, parentFragmentManager)
         }
         buttonStop()
     }

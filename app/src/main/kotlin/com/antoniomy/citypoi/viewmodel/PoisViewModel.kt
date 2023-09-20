@@ -90,9 +90,9 @@ class PoisViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             mediaPlayer.value = MediaPlayer.create(context, audioUri)
         }
-
-    enum class DIRECTION { GO_TO_LIST, GO_TO_MAP }
 }
+
+enum class DIRECTION { GO_TO_LIST, GO_TO_MAP, GO_TO_CAROUSEL }
 
 sealed class LoaderEvent {
     data object ShowLoading : LoaderEvent()

@@ -26,7 +26,7 @@ class RemoteRepositoryImpl @Inject constructor(
             catch (t: Throwable) {
                 when (t) {
                     is HttpException -> Log.e("httpError->", t.code().toString())
-                    else -> Log.e("Unknow Error->", t.message.toString())
+                    else -> Log.e("Unknown Error->", t.message.toString())
                 }
             }
         }
@@ -40,7 +40,7 @@ class RemoteRepositoryImpl @Inject constructor(
             catch (t: Throwable){
                 when(t){
                     is HttpException ->  Log.e("httpError->", t.code().toString())
-                    else -> Log.e("Unknow Error->", t.message.toString())
+                    else -> Log.e("Unknown Error->", t.message.toString())
                 }
             }
         }
