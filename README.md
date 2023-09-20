@@ -29,3 +29,11 @@ In maps_api_key.xml (app/src/main/res/values/maps_api_key.xml) enter your google
   - Retrofit, Gson.
   - ViewModel
   - Clean architecture. (Data, Domain, App<Framework + presentation> )
+
+## How does it work
+
+Introduction to the app:
+
+
+https://github.com/antoniomy82/CityPoi/assets/25392687/2b8e9b00-2a75-4afb-babb-f3aa4e7e3300
+
