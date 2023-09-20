@@ -6,6 +6,10 @@ Originally it connected to the citymap endpoints (https://cityme-services.prepro
 
 This app allows you to do the following actions for a POI: See its location on maps, play its audio, save it in a local database and show its image.
 
+>Note
+>
+>The classes and resources that used the original endpoint (cityme-services) have been preserved.
+
 ## How to start the project
 
 In maps_api_key.xml (app/src/main/res/values/maps_api_key.xml) enter your google maps api key.
@@ -32,21 +36,33 @@ In maps_api_key.xml (app/src/main/res/values/maps_api_key.xml) enter your google
 
 ## How does it work
 
-Introduction to the app :
+***Introduction to the app :***
 
 https://github.com/antoniomy82/CityPoi/assets/25392687/2b8e9b00-2a75-4afb-babb-f3aa4e7e3300
 
-Media Player :
+
+
+***Media Player :***
 
 https://github.com/antoniomy82/CityPoi/assets/25392687/746e2e76-3b26-4388-955d-e82c49148002
 
-Local DB : 
+>Note:
+>
+>The audio sounds cut off by the emulator. On a real smartphone it sounds good.
+
+
+
+***Local DB :*** 
 
 https://github.com/antoniomy82/CityPoi/assets/25392687/3b42332f-b0d9-4c90-9b8d-a0c94056e27b
 
-Maps: 
+
+
+***Maps :***
 
 https://github.com/antoniomy82/CityPoi/assets/25392687/edc83db2-3c72-4b07-a4a5-72ae67998a15
+
+
 
 
 
