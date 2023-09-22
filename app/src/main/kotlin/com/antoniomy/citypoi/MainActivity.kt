@@ -5,14 +5,16 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.antoniomy.citypoi.common.replaceFragment
-import com.antoniomy.citypoi.pois.PoisListFragment
+import com.antoniomy.citypoi.navigation.CitiesNavigation
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val poisViewModel: PoisViewModel by viewModels()
+    @Inject
+    lateinit var citiesNavigation : CitiesNavigation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         //Load Home fragment
         //replaceFragment(DistrictsFragment(poisViewModel), supportFragmentManager)
-        supportFragmentManager.replaceFragment(PoisListFragment( poisViewModel = poisViewModel), PoisListFragment.POI_ID)
+        citiesNavigation.goToList(poisViewModel, supportFragmentManager)
 
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {

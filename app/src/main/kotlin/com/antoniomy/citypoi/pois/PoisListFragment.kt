@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
+import com.antoniomy.citypoi.common.PoiProvider
 import com.antoniomy.citypoi.common.collectInLifeCycle
 import com.antoniomy.citypoi.databinding.FragmentPoiListBinding
 import com.antoniomy.citypoi.navigation.CitiesNavigation
@@ -26,6 +27,7 @@ class PoisListFragment(
 
     private lateinit var fragmentPoiListBinding: FragmentPoiListBinding
     @Inject lateinit var citiesNavigation: CitiesNavigation
+    @Inject lateinit var poiProvider: PoiProvider
 
 
     override fun onCreateView(
@@ -79,7 +81,7 @@ class PoisListFragment(
         poisViewModel.fetchDistricts.collectInLifeCycle(viewLifecycleOwner) { it ->
             it.let {
                 poisViewModel.retrieveDistrict = it
-                setDistrictListRecyclerViewAdapter(it)
+                setPoiRecyclerViewAdapter(it)
                 if (it.name != null) {
                     poisViewModel.apply {
                         toolbarSubtitle = it.name.toString().uppercase()
@@ -93,14 +95,16 @@ class PoisListFragment(
     }
 
 
-    private fun setDistrictListRecyclerViewAdapter(mDistrict: District) {
+    private fun setPoiRecyclerViewAdapter(mDistrict: District) {
         val recyclerView: RecyclerView = view?.findViewById(R.id.rvPois) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = context?.let {
             PoisListAdapter(
                 poisViewModel,
                 mDistrict,
-                parentFragmentManager
+                parentFragmentManager,
+                citiesNavigation,
+                poiProvider
             )
         }
     }

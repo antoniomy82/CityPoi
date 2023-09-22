@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.antoniomy.citypoi.R
-import com.antoniomy.citypoi.common.replaceFragment
-import com.antoniomy.citypoi.detail.DetailFragment
+import com.antoniomy.citypoi.common.PoiProvider
+import com.antoniomy.citypoi.navigation.CitiesNavigation
 import com.antoniomy.citypoi.viewmodel.DIRECTION
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
 import com.antoniomy.domain.model.Poi
@@ -22,7 +22,9 @@ import com.bumptech.glide.Glide
 class CarouselAdapter(
     private val itemList: List<Poi>,
     context: Context,
-    private val viewModel: PoisViewModel
+    private val viewModel: PoisViewModel,
+    private val citiesNavigation: CitiesNavigation,
+    private val poiProvider: PoiProvider
 ) : PagerAdapter() {
 
     override fun getCount() = itemList.size
@@ -61,10 +63,10 @@ class CarouselAdapter(
             description.text = itemList[position].description
             description.contentDescription = itemList[position].description
         }
-
         view.setOnClickListener {
             viewModel.popUpDirection = DIRECTION.GO_TO_CAROUSEL
-            mContext.supportFragmentManager.replaceFragment(DetailFragment(itemList[position], viewModel), DetailFragment.POI_ID)
+            poiProvider.setPoi(itemList[position])
+            citiesNavigation.goToDetail(viewModel,mContext.supportFragmentManager )
         }
 
         Log.d(

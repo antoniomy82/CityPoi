@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.antoniomy.citypoi.R
+import com.antoniomy.citypoi.common.PoiProvider
 import com.antoniomy.citypoi.common.loadIcon
 import com.antoniomy.citypoi.databinding.FragmentMapBinding
 import com.antoniomy.citypoi.navigation.CitiesNavigation
@@ -35,6 +36,7 @@ class MapFragment(private val poisVM: PoisViewModel) : Fragment(), OnMapReadyCal
     private var mapsBundle: Bundle? = null
     private var map: GoogleMap? = null
     @Inject lateinit var citiesNavigation: CitiesNavigation
+    @Inject lateinit var poiProvider: PoiProvider
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -102,14 +104,15 @@ class MapFragment(private val poisVM: PoisViewModel) : Fragment(), OnMapReadyCal
             map?.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, zoomLevel))
         }
 
-        googleMap.setOnMarkerClickListener {
+        googleMap.setOnMarkerClickListener { it ->
             it.position.latitude
             val mPoi: Poi? =
                 poisVM.retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
 
             poisVM.popUpDirection = DIRECTION.GO_TO_MAP
+
+            mPoi?.let {  poiProvider.setPoi(it)}
             citiesNavigation.goToDetail(
-                mPoi,
                 poisVM,
                 parentFragmentManager
             )

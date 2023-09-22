@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.antoniomy.citypoi.R
+import com.antoniomy.citypoi.common.PoiProvider
 import com.antoniomy.citypoi.common.collectInLifeCycle
 import com.antoniomy.citypoi.databinding.FragmentCarouselBinding
 import com.antoniomy.citypoi.navigation.CitiesNavigation
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class CarouselFragment(private val viewModel: PoisViewModel) : Fragment() {
 
     @Inject lateinit var citiesNavigation : CitiesNavigation
+    @Inject lateinit var poiProvider: PoiProvider
     private lateinit var binding: FragmentCarouselBinding
     private lateinit var sliderDotsPanel: LinearLayout
     private lateinit var dots: Array<ImageView?>
@@ -77,7 +79,7 @@ class CarouselFragment(private val viewModel: PoisViewModel) : Fragment() {
     private fun setCarouselView() {
         viewPager = view?.findViewById<View>(R.id.carouselCardsViewPager) as ViewPager
         sliderDotsPanel = view?.findViewById<View>(R.id.slider_dots) as LinearLayout
-        val viewPagerAdapter = CarouselAdapter(CAROUSEL_MODEL.carouselCards, requireContext(), viewModel)
+        val viewPagerAdapter = CarouselAdapter(CAROUSEL_MODEL.carouselCards, requireContext(), viewModel, citiesNavigation, poiProvider)
         viewPager.adapter = viewPagerAdapter
         viewPager.setPageTransformer(true, CarouselZoomOut())
         dotsCount = viewPagerAdapter.count

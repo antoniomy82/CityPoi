@@ -1,5 +1,7 @@
 package com.antoniomy.citypoi.di
 
+import com.antoniomy.citypoi.common.PoiProvider
+import com.antoniomy.citypoi.common.PoiProviderImpl
 import com.antoniomy.citypoi.navigation.CitiesNavigation
 import com.antoniomy.citypoi.navigation.CitiesNavigationImpl
 import dagger.Module
@@ -14,4 +16,8 @@ object UiDI {
     @Provides
     @Singleton
     fun citiesNavigation(): CitiesNavigation = CitiesNavigationImpl()
+
+    @Provides
+    @Singleton
+    fun poiProvider(): PoiProvider = PoiProviderImpl()
 }

@@ -10,14 +10,18 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy.citypoi.R
-import com.antoniomy.citypoi.carousel.CarouselFragment
-import com.antoniomy.citypoi.common.replaceFragment
 import com.antoniomy.citypoi.databinding.FragmentHomeDistrictBinding
+import com.antoniomy.citypoi.navigation.CitiesNavigation
 import com.antoniomy.citypoi.viewmodel.PoisViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.system.exitProcess
 
+@AndroidEntryPoint
 class DistrictsFragment(private val poisViewModel: PoisViewModel) : Fragment() {
 
+    @Inject
+    lateinit var citiesNavigation : CitiesNavigation
     private var fragmentHomeDistrictBinding: FragmentHomeDistrictBinding? = null
 
     private val madName = "Madrid"
@@ -63,7 +67,7 @@ class DistrictsFragment(private val poisViewModel: PoisViewModel) : Fragment() {
 
         view?.findViewById<View>(R.id.saved_pois)?.apply {
             visibility = View.VISIBLE
-            setOnClickListener {parentFragmentManager.replaceFragment(CarouselFragment(poisViewModel), POI_ID)}
+            setOnClickListener { citiesNavigation.goToCarousel(poisViewModel, parentFragmentManager)}
         }
         view?.findViewById<View>(R.id.headerBack)?.apply {
             setBackgroundResource(R.drawable.baseline_close_24)
@@ -79,7 +83,7 @@ class DistrictsFragment(private val poisViewModel: PoisViewModel) : Fragment() {
     private fun setHomeRecyclerViewAdapter() {
         val recyclerView: RecyclerView = view?.findViewById(R.id.rvHome) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = context?.let { DistricsAdapter( homeCities, it,  poisViewModel) }
+        recyclerView.adapter = context?.let { DistricsAdapter( homeCities, it,  poisViewModel, citiesNavigation) }
     }
 
     companion object {

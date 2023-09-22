@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.antoniomy.citypoi.R
 import com.antoniomy.citypoi.common.CustomBottomSheet
 import com.antoniomy.citypoi.common.CustomProgressDialog
+import com.antoniomy.citypoi.common.PoiProvider
 import com.antoniomy.citypoi.common.collectInLifeCycle
 import com.antoniomy.citypoi.common.countDown
 import com.antoniomy.citypoi.common.getTimeResult
@@ -35,12 +36,14 @@ import javax.inject.Inject
 import kotlin.properties.Delegates
 
 @AndroidEntryPoint
-class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel) : Fragment(), OnMapReadyCallback {
+class DetailFragment(private val viewModel: PoisViewModel) : Fragment(), OnMapReadyCallback {
 
     private var popUpPoisDetailBinding: PopUpPoisDetailBinding? = null
     private val bottomSheet by lazy { CustomBottomSheet(requireContext()) }
 
     @Inject lateinit var citiesNavigation : CitiesNavigation
+    @Inject lateinit var poiProvider: PoiProvider
+    private lateinit var mPoi: Poi
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
 
     private var map: GoogleMap? = null
@@ -51,7 +54,8 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
     private var myUri: Uri? = null
 
     var actualTime = ""
-    var aboutPoi = mPoi.city +" , "+ mPoi.district
+    var aboutPoi = ""
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,7 +68,7 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        mPoi = poiProvider.getPoi()
         setUi()
         setDbButtonListener()
         initObservers()
@@ -164,6 +168,7 @@ class DetailFragment(private val mPoi: Poi, private val viewModel: PoisViewModel
     }
 
     private fun setUi() {
+        aboutPoi = mPoi.city +" , "+ mPoi.district
         popUpPoisDetailBinding?.titlePopup?.text = mPoi.name
         popUpPoisDetailBinding?.streetPopup?.text = mPoi.description
         popUpPoisDetailBinding?.let { loadMapPopUp(it) }
